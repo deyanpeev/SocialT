@@ -1,0 +1,44 @@
+﻿<div class="container">
+    <div class="well">
+        <form name="createVmForm" class="form-horizontal">
+            <fieldset>
+                <legend>Create New Virtual Machine</legend>
+
+                <div class="form-group">
+                    <label for="virtualMachine-name" class="col-lg-2 control-label">Name</label>
+                    <div class="col-lg-10">
+                        <input id="virtualMachine-name" type="text" placeholder="Name" ng-model="virtualMachine.name" required="required" class="form-control" ng-minlength="5" ng-maxlength="100" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="virtualMachine-cpus" class="col-lg-2 control-label">Number of CPUs</label>
+                    <div class="col-lg-10">
+                        <input id="virtualMachine-cpus" type="number" placeholder="Number of CPUs" ng-model="virtualMachine.CpuCores" required="required" class="form-control" min="1" max="128" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="virtualMachine-memory" class="col-lg-2 control-label">Memory</label>
+                    <div class="col-lg-10">
+                        <input id="virtualMachine-memory" type="number" placeholder="Memory" ng-model="virtualMachine.Memory" required="required" class="form-control" min="512" max="1048576" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="virtualMachine-storage" class="col-lg-2 control-label">Storage</label>
+                    <div class="col-lg-10">
+                        <input id="virtualMachine-storage" type="number" placeholder="Storage" ng-model="virtualMachine.Storage" required="required" class="form-control" min="10" max="102400" />
+                    </div>
+                </div>
+
+                <div class="pull-right">
+                    <button ng-click="vm.createVm(virtualMachine)" ng-disabled="createVmForm.$invalid" class="btn btn-primary">
+                        Create
+                    </button>
+                    <a href="#/virtualMachines" class="btn btn-primary">Cancel</a>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+﻿<table class="table">
+    <tr>
+        <th class="text-center">Driver</th>
+        <th class="text-center">From</th>
+        <th class="text-center">To</th>
+        <th class="text-center">Departure Time</th>
+        <th class="text-center" ng-show="vm.identity && vm.identity.isAuthenticated()">
+            Is Mine
+        </th>
+    </tr>
+    <tr ng-repeat="trip in vm.trips">
+        <td class="text-center"><a href="#/trips/{{trip.id}}">{{trip.driverName}}</a></td>
+        <td class="text-center">{{trip.from}}</td>
+        <td class="text-center">{{trip.to}}</td>
+        <td class="text-center">{{trip.departureDate | date:'dd.MM.yyyy hh:mm'}}</td>
+        <td class="text-center" ng-show="vm.identity && vm.identity.isAuthenticated()"><img ng-src="/img/{{trip.isMine ? 'right.png' : 'cross.png'}}"</td>
+    </tr>
+</table>

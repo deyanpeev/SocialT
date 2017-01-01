@@ -1,0 +1,10 @@
+﻿<div class="panel-body">
+    <h1 class="text-center">{{vm.trip.driverName}} - {{vm.trip.departureDate | date:'MMM dd, yyyy h:mm:ss a'}}</h1>
+    <table class="table top-buffer">
+        <tr>
+            <td class="col-md-4 text-center">From: <strong>{{vm.trip.from}}</strong></td>
+            <td class="col-md-4 text-center">To: <strong>{{vm.trip.to}}</strong></td>
+            <td class="col-md-4 text-center">Number of free seats: <strong>{{vm.trip.numberOfFreeSeats}}</strong></td>
+        </tr>
+    </table>
+</div>

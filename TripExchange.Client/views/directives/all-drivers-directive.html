@@ -1,0 +1,12 @@
+﻿<table class="table">
+    <tr>
+        <th class="text-center">Name</th>
+        <th class="text-center">Upcoming Trips</th>
+        <th class="text-center">Total</th>
+    </tr>
+    <tr ng-repeat="driver in vm.drivers">
+        <td class="text-center"><a href="#/driver/{{driver.id}}">{{driver.name}}</a></td>
+        <td class="text-center">{{driver.numberOfUpcomingTrips}}</td>
+        <td class="text-center">{{driver.numberOfTotalTrips}}</td>
+    </tr>
+</table>

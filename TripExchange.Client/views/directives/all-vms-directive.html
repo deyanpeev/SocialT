@@ -1,0 +1,22 @@
+﻿<table class="table">
+    <tr>
+        <th class="text-center">Name</th>
+        <th class="text-center">Cores</th>
+        <th class="text-center">Memory</th>
+        <th class="text-center">Storage</th>
+        <th class="text-center" ng-show="vm.identity && vm.identity.isAuthenticated()">
+            State
+        </th>
+    </tr>
+    <tr ng-repeat="virtualMachine in vm.virtualMachines">
+        <td class="text-center">{{virtualMachine.name}}</td>
+        <td class="text-center">{{virtualMachine.cpuCores}}</td>
+        <td class="text-center">{{virtualMachine.memory}}</td>
+        <td class="text-center">{{virtualMachine.storage}}</td>
+        <td class="text-center" ng-show="vm.identity && vm.identity.isAuthenticated()">
+            <button ng-click="vm.changeState(virtualMachine)" class="btn btn-sm {{virtualMachine.isOn ? 'btn-danger' : 'btn-success'}}">
+                {{virtualMachine.isOn ? 'Stop' : 'Start'}}
+            </button>
+        </td>
+    </tr>
+</table>

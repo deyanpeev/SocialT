@@ -1,0 +1,87 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>SocialUnion</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="../css/toastr.min.css" />
+    <link rel="stylesheet" href="../css/app.css" />
+    <link href="css/kendo.common.min.css" rel="stylesheet" />
+    <link href="css/kendo.bootstrap.min.css" rel="stylesheet" />
+</head>
+<body ng-app="myApp" ng-cloak>
+    <div ng-controller="HomeController">
+    </div>
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="#/" class="navbar-brand">SocialUnion</a>
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse" id="navbar-main">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#/virtualMachines">Virtual machines</a>
+                    </li>
+                </ul>
+                <div ng-include="'views/partials/identity/login.html'"></div>
+            </div>
+        </div>
+    </div>
+    <div ng-view>
+    </div>
+    <hr />
+    <footer class="text-center" ng-cloak>
+        Copyright:<strong> <a href="http://tu-sofia.bg//" target="_blank">TU - Sofia</a></strong>
+        <br />
+        <strong> Developed by Deyan Peev</strong>
+    </footer>
+    <hr />
+
+    <script src="lib/jquery/jquery.min.js"></script>
+    <script src="lib/toastr/toastr.min.js"></script>
+    <script src="lib/bootstrap/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-route.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-cookies.min.js"></script>
+
+    <script src="lib/kendo/kendo.core.min.js"></script>
+    <script src="lib/kendo/kendo.all.min.js"></script>
+    <script src="lib/kendo/kendo.angular.min.js"></script>
+
+    <script src="js/app.js"></script>
+    <script src="js/common/notifier.js"></script>
+    <script src="js/common/data.js"></script>
+    <script src="js/common/beautiful-date.js"></script>
+
+    <script src="js/home/home-controller.js"></script>
+    <script src="js/home/statistics-service.js"></script>
+
+    <script src="js/identity/auth.js"></script>
+    <script src="js/identity/authorization.js"></script>
+    <script src="js/identity/identity.js"></script>
+    <script src="js/identity/login-controller.js"></script>
+    <script src="js/identity/register-controller.js"></script>
+
+    <script src="js/trips/trips-service.js"></script>
+    <script src="js/trips/trips-controller.js"></script>
+    <script src="js/trips/all-trips-directive.js"></script>
+    <script src="js/trips/cities-service.js"></script>
+    <script src="js/trips/create-trip-controller.js"></script>
+    <script src="js/trips/trip-details-controller.js"></script>
+
+    <script src="js/drivers/drivers-service.js"></script>
+    <script src="js/drivers/all-drivers-directive.js"></script>
+    <script src="js/drivers/drivers-controller.js"></script>
+
+    <script src="js/vms/vms-service.js"></script>
+    <script src="js/vms/vms-controller.js"></script>
+    <script src="js/vms/all-vms-directive.js"></script>
+    <script src="js/vms/create-vm-controller.js"></script>
+</body>
+</html>
