@@ -62,6 +62,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SocialT.Common\SocialT.Common.csproj">
+      <Project>{66158F75-1774-4A77-81DB-540AD9F3E5B4}</Project>
+      <Name>SocialT.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SocialT.Models\SocialT.Models.csproj">
       <Project>{a3e05c27-e8f6-4510-b9c5-7d2dde3b6aed}</Project>
       <Name>SocialT.Models</Name>

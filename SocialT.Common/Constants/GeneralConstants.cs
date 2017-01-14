@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TripExchange.Common.Constants
+namespace SocialT.Common.Constants
 {
     public class GeneralConstants
     {

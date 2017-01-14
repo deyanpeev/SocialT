@@ -902,6 +902,7 @@
     <Content Include="views\partials\home\home.html" />
     <Content Include="views\partials\home\unauthorized.html" />
     <Content Include="views\partials\identity\login.html" />
+    <Content Include="views\partials\identity\register-teacher.html" />
     <Content Include="views\partials\identity\register.html" />
     <Content Include="views\partials\trips\all-trips.html" />
     <Content Include="views\partials\trips\create-trip.html" />

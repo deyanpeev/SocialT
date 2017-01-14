@@ -78,6 +78,7 @@
             }
         }
         
+        //TODO Depricate
         // POST api/Users/Register
         [AllowAnonymous]
         [Route("Register")]

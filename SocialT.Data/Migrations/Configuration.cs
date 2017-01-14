@@ -9,6 +9,7 @@ namespace SocialT.Data.Migrations
     using Microsoft.AspNet.Identity.EntityFramework;
 
     using SocialT.Models;
+    using Common.Constants;
 
     public sealed class Configuration : DbMigrationsConfiguration<ApplicationDbContext>
     {
@@ -27,13 +28,13 @@ namespace SocialT.Data.Migrations
 
             var random = new Random();
 
+            var specialties = this.SeedSpecialties(context);
+            var skills = this.SeedSkills(context);
             var roles = this.SeedApplicationRoles(context);
-
-            var users = this.SeedApplicationUsers(context, roles);
-
+            var groups = this.SeedGroups(context, specialties, random);
+            var users = this.SeedApplicationUsers(context, roles, skills, groups, random);
             //TODO remove
             var cities = this.SeedCities(context);
-
             this.SeedTrips(context, random, users, cities);
 
             context.SaveChanges();
@@ -133,7 +134,7 @@ namespace SocialT.Data.Migrations
             var roleStore = new RoleStore<ApplicationRole>(context);
             var manager = new RoleManager<ApplicationRole>(roleStore);
 
-            string[] roleStrings = { "Admin", "Teacher", "Student", "Employer" };
+            string[] roleStrings = { RoleConstants.Admin, RoleConstants.Teacher, RoleConstants.Student, RoleConstants.Employer };
             IList<ApplicationRole> roles = new List<ApplicationRole>();
             foreach (string roleString in roleStrings)
             {
@@ -145,9 +146,10 @@ namespace SocialT.Data.Migrations
             return roles;
         }
 
-        private void SeedSpecialties(ApplicationDbContext context)
+        private IList<Specialty> SeedSpecialties(ApplicationDbContext context)
         {
-            var specialtyNames = new List<string>
+            IList<Specialty> specialties = new List<Specialty>();
+            string[] specialtyNames = new string[]
             {
                 "Computer and Software Engineering",
                 "Telecommunication",
@@ -166,11 +168,63 @@ namespace SocialT.Data.Migrations
             foreach (var specialyName in specialtyNames)
             {
                 var specialty = new Specialty { Name = specialyName };
+                specialties.Add(specialty);
                 context.Specialties.Add(specialty);
             }
+
+            return specialties;
         }
 
-        private List<ApplicationUser> SeedApplicationUsers(ApplicationDbContext context, IList<ApplicationRole> roles)
+        private IList<Skill> SeedSkills(ApplicationDbContext context)
+        {
+            IList<Skill> skills = new List<Skill>();
+            string[] skillNames = new string[]
+            {
+                "Radio Communications",
+                "CSS",
+                "HTML",
+                "Spanish",
+                "English",
+                "Practicle Programming",
+                "Algorithms",
+                "German",
+                "Java",
+                "vRB"
+            };
+
+            foreach (var skillName in skillNames)
+            {
+                var skill = new Skill
+                {
+                    Name = skillName
+                };
+                skills.Add(skill);
+                context.Skills.Add(skill);
+            }
+
+            return skills;
+        }
+
+        public IList<Group> SeedGroups(ApplicationDbContext context, IList<Specialty> specialties, Random random)
+        {
+            IList<Group> groups = new List<Group>();
+            for (int i = 10; i < 50; i++)
+            {
+                Group group = new Group
+                {
+                    Name = i.ToString(),
+                    SpecialtyId = random.Next(0, specialties.Count)
+                };
+                groups.Add(group);
+                context.Groups.Add(group);
+            }
+
+            return groups;
+        }
+
+        //TODO remove car info
+        private List<ApplicationUser> SeedApplicationUsers(ApplicationDbContext context, IList<ApplicationRole> roles,
+            IList<Skill> skills, IList<Group> groups, Random random)
         {
             var users = new List<ApplicationUser>();
             var userStore = new UserStore<ApplicationUser>(context);
@@ -188,8 +242,33 @@ namespace SocialT.Data.Migrations
                     Email = userName,
                     IsDriver = isDriver,
                     Car = car,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    PhoneNumber = "0" + i.ToString().PadLeft(10, '3')
                 };
+
+                switch (roleName)
+                {
+                    case RoleConstants.Employer:
+                        user.CompanyMoto = "Auto generated cool company";
+                        user.CompanyName = "Be awesome";
+                        user.Description = "Looking for talanted students.";
+                        break;
+                    case RoleConstants.Student:
+                        user.FirstName = "FirstName" + i;
+                        user.LastName = "LastName" + i;
+                        for (int j = 0; j < random.Next(0, skills.Count); j++)
+                        {
+                            user.Skills.Add(skills[j]);
+                        }
+                        user.Course = random.Next(1, 4);
+                        user.Grade = random.NextDouble() * (6 - 2) + 2;
+                        user.Group = groups[random.Next(0, groups.Count)];
+                        user.Interests = new string[] { "Auto generated interest" };
+                        user.StrongAreas = new string[] { "Auto generated strong area" };
+                        break;
+                    default:
+                        break;
+                }
 
                 var identityResult = manager.Create(user, Password);
                 manager.AddToRole(user.Id, roleName);

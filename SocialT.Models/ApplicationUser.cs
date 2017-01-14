@@ -80,7 +80,7 @@
 
         public virtual int? GroupId { get; set; }
 
-        public virtual Group Gruop { get; set; }
+        public virtual Group Group { get; set; }
 
         //Employer
         public string Description { get; set; }

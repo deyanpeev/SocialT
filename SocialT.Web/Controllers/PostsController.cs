@@ -7,7 +7,6 @@
     using System.Linq;
     using System.Web.Http;
     using SocialT.Common.Constants;
-    using TripExchange.Common.Constants;
     using System.Web.Security;
     using SocialT.Models;
 
@@ -25,7 +24,8 @@
 
         [HttpGet]
         [Authorize(Roles = RoleConstants.Student)]
-        public IHttpActionResult Get()
+        [Route("api/Posts/GetAllPostsForUserGroup")]
+        public IHttpActionResult GetAllForUserGroup()
         {
             var currentUserId = User.Identity.GetUserId();
             var currentUser = this.Data.Users.All().FirstOrDefault(x => x.Id == currentUserId);
@@ -41,6 +41,7 @@
         [HttpPost]
         [Authorize(Roles = RoleConstants.Employer)]
         [Authorize(Roles = RoleConstants.Student)]
+        [Route("api/Posts/CreateNewPost")]
         public IHttpActionResult CreateNewPost(CreatePostViewModel inputPost)
         {
             if (!this.ModelState.IsValid)
@@ -64,8 +65,10 @@
                 Specialty = this.Data.Specialties.All().SingleOrDefault(s => s.Name.Equals(inputPost.Specialty)),
                 UserFromId = currentUserId
             };
+            this.Data.Posts.Add(newPost);
+            this.Data.SaveChanges();
 
-            return Ok(newPost.Id);
+            return Ok("New post added.");
         }
     }
 }
