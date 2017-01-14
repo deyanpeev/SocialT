@@ -15,7 +15,7 @@ namespace  SocialT.Web
     using Microsoft.Owin.Cors;
 
     using Owin;
-    using TripExchange.Web.Infrastructure;
+    using SocialT.Web.Infrastructure;
 
     public partial class Startup
     {

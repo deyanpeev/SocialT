@@ -48,9 +48,15 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationRole.cs" />
     <Compile Include="ApplicationUser.cs" />
     <Compile Include="City.cs" />
+    <Compile Include="Group.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="Post.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Skill.cs" />
+    <Compile Include="Specialty.cs" />
     <Compile Include="Trip.cs" />
     <Compile Include="VirtualMachine.cs" />
   </ItemGroup>
@@ -59,7 +65,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TripExchange.Common\SocialT.Common.csproj">
+    <ProjectReference Include="..\SocialT.Common\SocialT.Common.csproj">
       <Project>{66158f75-1774-4a77-81db-540ad9f3e5b4}</Project>
       <Name>SocialT.Common</Name>
     </ProjectReference>

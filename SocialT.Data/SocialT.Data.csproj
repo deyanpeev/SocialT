@@ -62,8 +62,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TripExchange.Models\SocialT.Models.csproj">
-      <Project>{A3E05C27-E8F6-4510-B9C5-7D2DDE3B6AED}</Project>
+    <ProjectReference Include="..\SocialT.Models\SocialT.Models.csproj">
+      <Project>{a3e05c27-e8f6-4510-b9c5-7d2dde3b6aed}</Project>
       <Name>SocialT.Models</Name>
     </ProjectReference>
   </ItemGroup>

@@ -13,6 +13,8 @@
                     else {
                         notifier.error('Username/Password combination is not valid!');
                     }
+                }, function (error) {
+                    notifier.error(error);
                 });
             }
             else {

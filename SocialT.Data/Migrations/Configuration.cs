@@ -1,4 +1,4 @@
-namespace  SocialT.Data.Migrations
+namespace SocialT.Data.Migrations
 {
     using System;
     using System.Collections.Generic;
@@ -27,8 +27,11 @@ namespace  SocialT.Data.Migrations
 
             var random = new Random();
 
-            var users = this.SeedApplicationUsers(context);
+            var roles = this.SeedApplicationRoles(context);
 
+            var users = this.SeedApplicationUsers(context, roles);
+
+            //TODO remove
             var cities = this.SeedCities(context);
 
             this.SeedTrips(context, random, users, cities);
@@ -106,14 +109,14 @@ namespace  SocialT.Data.Migrations
                 users = this.Shuffle(users, random).ToList();
 
                 var trip = new Trip
-                               {
-                                   DepartureTime = DateTime.Now.AddDays(i),
-                                   AvailableSeats = 5,
-                                   From = firstCity,
-                                   To = secondCity,
-                               };
+                {
+                    DepartureTime = DateTime.Now.AddDays(i),
+                    AvailableSeats = 5,
+                    From = firstCity,
+                    To = secondCity,
+                };
 
-                for (var j = 0; j < random.Next(0, 4); j++)
+                for (var j = 0; j < random.Next(0, 1); j++)
                 {
                     trip.Passengers.Add(users[j]);
                 }
@@ -125,27 +128,71 @@ namespace  SocialT.Data.Migrations
             }
         }
 
-        private List<ApplicationUser> SeedApplicationUsers(ApplicationDbContext context)
+        private IList<ApplicationRole> SeedApplicationRoles(ApplicationDbContext context)
         {
-            const int NumberOfUsers = 40;
+            var roleStore = new RoleStore<ApplicationRole>(context);
+            var manager = new RoleManager<ApplicationRole>(roleStore);
+
+            string[] roleStrings = { "Admin", "Teacher", "Student", "Employer" };
+            IList<ApplicationRole> roles = new List<ApplicationRole>();
+            foreach (string roleString in roleStrings)
+            {
+                ApplicationRole role = new ApplicationRole(roleString);
+                roles.Add(role);
+                manager.Create(role);
+            }
+
+            return roles;
+        }
+
+        private void SeedSpecialties(ApplicationDbContext context)
+        {
+            var specialtyNames = new List<string>
+            {
+                "Computer and Software Engineering",
+                "Telecommunication",
+                "Electronics",
+                "Energetics",
+                "Electrical Engineering",
+                "Aviation Equipment and Technologies",
+                "Engineering Physics",
+                "Mechatronics",
+                "Business Administration",
+                "Public Administration",
+                "Handling Equipment and Technologies",
+                "Engineering Design",
+            };
+
+            foreach (var specialyName in specialtyNames)
+            {
+                var specialty = new Specialty { Name = specialyName };
+                context.Specialties.Add(specialty);
+            }
+        }
+
+        private List<ApplicationUser> SeedApplicationUsers(ApplicationDbContext context, IList<ApplicationRole> roles)
+        {
             var users = new List<ApplicationUser>();
             var userStore = new UserStore<ApplicationUser>(context);
             var manager = new UserManager<ApplicationUser>(userStore);
-            for (var i = 1; i <= NumberOfUsers; i++)
+            for (var i = 0; i < roles.Count; i++)
             {
-                var userName = string.Format("test{0:D2}@test.com", i);
-                const string Password = "123456";
+                string roleName = roles[i].Name;
+                string userName = string.Format(roleName + "{0}@test.com", i);
+                const string Password = "VMware1!";
                 var isDriver = i % 2 == 0;
                 var car = isDriver ? string.Format("car {0}", i) : null;
                 var user = new ApplicationUser
-                               {
-                                   UserName = userName,
-                                   Email = userName,
-                                   IsDriver = isDriver,
-                                   Car = car,
-                               };
+                {
+                    UserName = userName,
+                    Email = userName,
+                    IsDriver = isDriver,
+                    Car = car,
+                    EmailConfirmed = true
+                };
 
                 var identityResult = manager.Create(user, Password);
+                manager.AddToRole(user.Id, roleName);
                 if (identityResult.Succeeded)
                 {
                     users.Add(user);
@@ -166,22 +213,6 @@ namespace  SocialT.Data.Migrations
             }
 
             return list;
-        }
-
-        private void SeedUsers()
-        {
-            var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
-
-            var user = new ApplicationUser()
-            {
-                UserName = "SuperPowerUser",
-                Email = "taiseer.joudeh@mymail.com",
-                EmailConfirmed = true,
-                FirstName = "Taiseer",
-                LastName = "Joudeh"
-            };
-
-            manager.Create(user, "MySuperP@ssword!");
         }
     }
 }

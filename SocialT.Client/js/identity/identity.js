@@ -26,6 +26,34 @@
             },
             isAuthenticated: function () {
                 return !!this.getCurrentUser();
+            },
+            isStudent: function () {
+                if (!this.isAuthenticated()) {
+                    return false;
+                }
+
+                return this.getCurrentUser()['role'] == 'Student';
+            },
+            isAdmin: function () {
+                if (!this.isAuthenticated()) {
+                    return false;
+                }
+
+                return this.getCurrentUser()['role'] == 'Admin';
+            },
+            isEmployer: function () {
+                if (!this.isAuthenticated()) {
+                    return false;
+                }
+
+                return this.getCurrentUser()['role'] == 'Employer';
+            },
+            isTeacher: function () {
+                if (!this.isAuthenticated()) {
+                    return false;
+                }
+
+                return this.getCurrentUser()['role'] == 'Teacher';
             }
         }
     }

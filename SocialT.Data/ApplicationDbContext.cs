@@ -17,6 +17,15 @@
             Configuration.LazyLoadingEnabled = false;
         }
 
+        public IDbSet<Message> Posts { get; set; }
+
+        public IDbSet<Group> Groups { get; set; }
+
+        public IDbSet<Specialty> Specialties { get; set; }
+
+        public IDbSet<Skill> Skills { get; set; }
+
+        //TODO Remove
         public IDbSet<Trip> Trips { get; set; }
 
         public IDbSet<City> Cities { get; set; }

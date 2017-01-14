@@ -13,6 +13,7 @@
                         deferred.resolve();
                     }, function (response) {
                         var error = response.data.modelState;
+                        System.log(error);
                         if(error && error[Object.keys(error)[0]][0]){
                             error = error[Object.keys(error)[0]][0];
                         } 
@@ -31,9 +32,17 @@
                             identity.setCurrentUser(response.data);
                             deferred.resolve(true);
                         }
-                        else {
-                            deferred.resolve(false);
+                    }, function (response) {
+                        var error = response.data.error_description;
+                        error = response.data.modelState;
+                        if (error && error[Object.keys(error)[0]][0]) {
+                            error = error[Object.keys(error)[0]][0];
+                        } else {
+                            error = response.data.error_description;
                         }
+                        console.log(error);
+
+                        deferred.reject(error);
                     });
 
                 return deferred.promise;

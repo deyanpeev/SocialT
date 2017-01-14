@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TripExchange.Web.Infrastructure
+namespace SocialT.Web.Infrastructure
 {
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {

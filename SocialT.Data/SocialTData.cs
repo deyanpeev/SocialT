@@ -31,6 +31,15 @@
             }
         }
 
+        public IRepository<Skill> Skills
+        {
+            get
+            {
+                return this.GetRepository<Skill>();
+            }
+        }
+
+        //TODO Remove
         public IRepository<Trip> Trips
         {
             get
@@ -55,6 +64,38 @@
             }
         }
 
+        public IRepository<Message> Messages
+        {
+            get
+            {
+                return this.GetRepository<Message>();
+            }
+        }
+
+        public IRepository<Post> Posts
+        {
+            get
+            {
+                return this.GetRepository<Post>();
+            }
+        }
+
+        public IRepository<Group> Groups
+        {
+            get
+            {
+                return this.GetRepository<Group>();
+            }
+        }
+
+        public IRepository<Specialty> Specialties
+        {
+            get
+            {
+                return this.GetRepository<Specialty>();
+            }
+        }
+
         public int SaveChanges()
         {
             return this.context.SaveChanges();
@@ -65,11 +106,6 @@
             if (!this.repositories.ContainsKey(typeof(T)))
             {
                 var type = typeof(EfRepository<T>);
-
-                //// if (typeof(T).IsAssignableFrom(typeof(UserProfile)))
-                //// {
-                ////     type = typeof(UsersRepository);
-                //// }
 
                 this.repositories.Add(typeof(T), Activator.CreateInstance(type, this.context));
             }

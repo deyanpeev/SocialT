@@ -88,11 +88,27 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="SendGrid.SmtpApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SendGrid.SmtpApiPlus.1.0.1\lib\portable-net4+sl5+wp8+win8+wpa81+monotouch+monoandroid\SendGrid.SmtpApi.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SendGridPlus, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SendGridPlus.4.1\lib\net45\SendGridPlus.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http.Extensions, Version=2.2.20.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.20\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives, Version=4.2.20.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.20\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Cors">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.2\lib\net45\System.Web.Cors.dll</HintPath>
@@ -188,6 +204,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\RoleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -222,6 +239,9 @@
     <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\CitiesController.cs" />
     <Compile Include="Controllers\DriversController.cs" />
+    <Compile Include="Controllers\GroupController.cs" />
+    <Compile Include="Controllers\PostsController.cs" />
+    <Compile Include="Controllers\SpecialtiesController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Controllers\TripsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -235,6 +255,8 @@
     <Compile Include="Models\Drivers\DriverViewModel.cs" />
     <Compile Include="Models\Drivers\DriverWithTripsViewModel.cs" />
     <Compile Include="Models\Drivers\GetDriversBindingModel.cs" />
+    <Compile Include="Models\Posts\CreatePostViewModel.cs" />
+    <Compile Include="Models\Posts\GetPostsViewModel.cs" />
     <Compile Include="Models\Stats\StatsViewModel.cs" />
     <Compile Include="Models\Trips\CreateTripBindingModel.cs" />
     <Compile Include="Models\Trips\GetTripsBindingModel.cs" />
@@ -245,7 +267,9 @@
     <Compile Include="Models\Users\ExternalLoginViewModel.cs" />
     <Compile Include="Models\Users\ManageInfoViewModel.cs" />
     <Compile Include="Models\Users\RegisterBindingModel.cs" />
+    <Compile Include="Models\Users\RegisterEmpoyerModel.cs" />
     <Compile Include="Models\Users\RegisterExternalBindingModel.cs" />
+    <Compile Include="Models\Users\RegisterStudentModel.cs" />
     <Compile Include="Models\Users\RemoveLoginBindingModel.cs" />
     <Compile Include="Models\Users\SetPasswordBindingModel.cs" />
     <Compile Include="Models\Users\UserInfoViewModel.cs" />
@@ -256,6 +280,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
+    <Compile Include="Services\GeneralMailMessageService.cs" />
+    <Compile Include="Services\IdentityMessageService.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -264,6 +290,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="EmailContent\VerifyEmail.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -325,21 +352,23 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Group\" />
+    <Folder Include="Views\Posts\" />
     <Folder Include="Views\Trips\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TripExchange.Common\SocialT.Common.csproj">
+    <ProjectReference Include="..\SocialT.Common\SocialT.Common.csproj">
       <Project>{66158f75-1774-4a77-81db-540ad9f3e5b4}</Project>
       <Name>SocialT.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TripExchange.Data\SocialT.Data.csproj">
+    <ProjectReference Include="..\SocialT.Data\SocialT.Data.csproj">
       <Project>{C4F20351-DE3A-4F6D-B20A-E6680CEBE50B}</Project>
       <Name>SocialT.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TripExchange.Models\SocialT.Models.csproj">
+    <ProjectReference Include="..\SocialT.Models\SocialT.Models.csproj">
       <Project>{A3E05C27-E8F6-4510-B9C5-7D2DDE3B6AED}</Project>
       <Name>SocialT.Models</Name>
     </ProjectReference>
@@ -372,6 +401,11 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

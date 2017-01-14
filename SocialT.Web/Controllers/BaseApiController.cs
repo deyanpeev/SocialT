@@ -3,7 +3,7 @@
     using System.Web.Http;
 
     using SocialT.Data;
-    using TripExchange.Web.Infrastructure;
+    using SocialT.Web.Infrastructure;
 
     public class BaseApiController : ApiController
     {

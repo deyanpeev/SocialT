@@ -23,6 +23,10 @@
     using SocialT.Web.Providers;
     using SocialT.Web.Results;
     using System.Web.Security;
+    using SocialT.Common.Constants;
+    using App_Start;
+    using Microsoft.Owin.Security.DataProtection;
+    using SocialT.Web.Services;
 
     [Authorize]
     [RoutePrefix("api/users")]
@@ -31,11 +35,14 @@
         private const string LocalLoginProvider = "Local";
 
         private ApplicationUserManager userManager;
+        private ApplicationRoleManager roleManager;
 
         public UsersController()
             : base(new SocialTData())
         {
             this.userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+
+            this.roleManager = new ApplicationRoleManager(new RoleStore<IdentityRole>(new ApplicationDbContext()));
         }
 
         public UsersController(
@@ -101,7 +108,133 @@
                 return this.GetErrorResult(result);
             }
 
-            return this.Ok();
+            Uri locationHeader = this.SendActivationMail(user);
+
+            return Created(locationHeader, user);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("RegisterStudent")]
+        public async Task<IHttpActionResult> RegisterStudent(RegisterStudentModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
+            Specialty specialty = this.Data.Specialties.All().Single(s => s.Name == model.Specialty);
+
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                FacultyNumber = model.FacultyNumber,
+                Course = model.Course,
+                IsActive = false
+            };
+
+            IdentityResult result = await this.UserManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+            {
+                return this.GetErrorResult(result);
+            }
+
+            userManager.AddToRole(user.Id, RoleConstants.Student);
+
+            Uri locationHeader = this.SendActivationMail(user);
+
+            return Created(locationHeader, user);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("RegisterEmployer")]
+        public async Task<IHttpActionResult> RegisterEmployer(RegisterEmployerModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                Description = model.Description,
+                CompanyName = model.CompanyName,
+                CompanyMoto = model.CompanyMoto,
+                IsActive = false
+            };
+
+            IdentityResult result = await this.UserManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+            {
+                return this.GetErrorResult(result);
+            }
+
+            userManager.AddToRole(user.Id, RoleConstants.Employer);
+
+            Uri locationHeader = this.SendActivationMail(user);
+
+            return Created(locationHeader, user);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("ConfirmEmail", Name = "ConfirmEmailRoute")]
+        public async Task<IHttpActionResult> ConfirmEmail(string userId = "", string code = "")
+        {
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
+            {
+                return BadRequest("User Id and Code are required");
+            }
+
+            if (this.UserManager.UserTokenProvider == null)
+            {
+                var provider = new DpapiDataProtectionProvider("SocialT ");
+                this.UserManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(provider.Create("EmailConfirmation"));
+            }
+            IdentityResult result = await this.UserManager.ConfirmEmailAsync(userId, code);
+
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+            else
+            {
+                return GetErrorResult(result);
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = RoleConstants.Admin)]
+        [Route("SetUserToActive")]
+        public IHttpActionResult SetUserToActive(string userId = "")
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return BadRequest("The user ID cannot be null or empty.");
+            }
+
+            var db = new ApplicationDbContext();
+            var user = db.Users.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return BadRequest("User with that ID does not exist.");
+            }
+
+            user.IsActive = true;
+            db.SaveChanges();
+
+            GeneralMailMessageService.SendEmail(user.Email, "SocialT User was activated", "Your account was successfully activated.");
+
+            return Ok("Successfully changed user acive status.");
         }
 
         // GET api/Users/UserInfo
@@ -129,6 +262,41 @@
                             IsDriver = user.IsDriver,
                             Car = user.Car,
                         });
+        }
+
+        [Route("Users")]
+        public IHttpActionResult GetUsers()
+        {
+            throw new NotImplementedException("Not imeplemented");
+            //return Ok(this.AppUserManager.Users.ToList().Select(u => this.TheModelFactory.Create(u)));
+        }
+
+        [Route("user/{id:guid}", Name = "GetUserById")]
+        public async Task<IHttpActionResult> GetUser(string Id)
+        {
+            ApplicationUser user = await this.UserManager.FindByIdAsync(Id);
+
+            if (user != null)
+            {
+                return Ok(user);
+            }
+
+            return NotFound();
+
+        }
+
+        [Route("user/{username}")]
+        public async Task<IHttpActionResult> GetUserByName(string username)
+        {
+            var user = await this.UserManager.FindByNameAsync(username);
+
+            if (user != null)
+            {
+                return Ok(user);
+            }
+
+            return NotFound();
+
         }
 
         // POST api/Users/Logout
@@ -342,7 +510,8 @@
                 var cookieIdentity =
                     await user.GenerateUserIdentityAsync(this.UserManager, CookieAuthenticationDefaults.AuthenticationType);
 
-                AuthenticationProperties properties = ApplicationOAuthProvider.CreateProperties(user.UserName);
+                AuthenticationProperties properties = ApplicationOAuthProvider.CreateProperties(user.UserName,
+                    roleManager.FindByIdAsync(user.Roles.FirstOrDefault().RoleId).Result.Name);
                 this.Authentication.SignIn(properties, oauthIdentity, cookieIdentity);
             }
             else
@@ -435,6 +604,25 @@
         }
 
         #region Helpers
+
+        private Uri SendActivationMail(ApplicationUser user)
+        {
+            if (this.UserManager.UserTokenProvider == null)
+            {
+                var provider = new DpapiDataProtectionProvider("SocialT");
+                this.UserManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(provider.Create("EmailConfirmation"))
+                {
+                    TokenLifespan = TimeSpan.FromHours(3)
+                };
+            }
+            this.UserManager.EmailService = new IdentityMessageService();
+            string code = UserManager.GenerateEmailConfirmationTokenAsync(user.Id).Result;
+            var callbackUrl = new Uri(Url.Link("ConfirmEmailRoute", new { userId = user.Id, code = code }));
+            this.UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>").Wait();
+            Uri locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
+
+            return locationHeader;
+        }
 
         private IHttpActionResult GetErrorResult(IdentityResult result)
         {

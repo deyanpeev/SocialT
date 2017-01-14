@@ -34,6 +34,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants\GeneralConstants.cs" />
+    <Compile Include="Constants\RoleConstants.cs" />
     <Compile Include="Constants\ValidationConstants.cs" />
     <Compile Include="QueryableExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

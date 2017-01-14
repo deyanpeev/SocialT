@@ -11,6 +11,8 @@
 
     using SocialT.Data;
     using SocialT.Models;
+    using App_Start;
+    using System.Linq;
 
     public class ApplicationOAuthProvider : OAuthAuthorizationServerProvider
     {
@@ -26,11 +28,12 @@
             this.publicClientId = publicClientId;
         }
 
-        public static AuthenticationProperties CreateProperties(string userName)
+        public static AuthenticationProperties CreateProperties(string userName, string role)
         {
             IDictionary<string, string> data = new Dictionary<string, string>
             {
-                { "userName", userName }
+                { "userName", userName },
+                {"role", role}
             };
             return new AuthenticationProperties(data);
         }
@@ -38,7 +41,9 @@
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
             // TODO: This throws a null reference exception var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
-            var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+            var dbContext = new ApplicationDbContext();
+            var userManager = new ApplicationUserManager(new UserStore<ApplicationUser>(dbContext));
+            var roleManager = new ApplicationRoleManager(new RoleStore<IdentityRole>(dbContext));
 
             var user = await userManager.FindAsync(context.UserName, context.Password);
 
@@ -48,11 +53,25 @@
                 return;
             }
 
+            if (!user.EmailConfirmed)
+            {
+                context.SetError("invalid_grant", "User did not confirm the email.");
+                return;
+            }
+
+            //if user active == true => user is eighter employer or student
+            if (user.IsActive != null && !((bool)user.IsActive))
+            {
+                context.SetError("invalid_grant", "User is not actived by any of the teachers.");
+                return;
+            }
+
             var oauthIdentity = await user.GenerateUserIdentityAsync(userManager, OAuthDefaults.AuthenticationType);
             var cookiesIdentity =
                 await user.GenerateUserIdentityAsync(userManager, CookieAuthenticationDefaults.AuthenticationType);
 
-            AuthenticationProperties properties = CreateProperties(user.UserName);
+            AuthenticationProperties properties = CreateProperties(user.UserName,
+                roleManager.FindByIdAsync(user.Roles.FirstOrDefault().RoleId).Result.Name);
             var ticket = new AuthenticationTicket(oauthIdentity, properties);
             context.Validated(ticket);
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
