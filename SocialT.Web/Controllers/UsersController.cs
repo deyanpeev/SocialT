@@ -27,6 +27,7 @@
     using App_Start;
     using Microsoft.Owin.Security.DataProtection;
     using SocialT.Web.Services;
+    using Models.Users.InfoModels;
 
     [Authorize]
     [RoutePrefix("api/users")]
@@ -77,6 +78,45 @@
                 return Request.GetOwinContext().Authentication;
             }
         }
+
+        [HttpGet]
+        [Route("GetUserById")]
+        public IHttpActionResult GetUserById()
+        {
+            return this.GetUserById(User.Identity.GetUserId());
+        }
+
+        [HttpGet]
+        [Route("GetUserById")]
+        public IHttpActionResult GetUserById(string id)
+        {
+            string currenUserId = User.Identity.GetUserId();
+
+            string roleId = this.Data.Users.All()
+                .Select(u => new { Id = u.Id, Role = u.Roles.FirstOrDefault()})
+                .FirstOrDefault(u => u.Id == id).Role.RoleId;
+            string roleName = this.Data.Roles.All().First(r => r.Id == roleId).Name;
+            //string userRole = this.Data.Roles.All().FirstOrDefault(r => r.Id == roleId).Name;
+            var user = this.Data.Users.GetById(id);
+
+            IUserInfoModel result = null;
+
+            switch (roleName)
+            {
+                case RoleConstants.Student:
+                    result = this.Data.Users.All().Select(StudentInfoModel.FromAppUser).FirstOrDefault(u => u.Id == id);
+                    break;
+                case RoleConstants.Employer:
+                    result = this.Data.Users.All().Select(EmployerInfoModel.FromAppUser).FirstOrDefault(u => u.Id == id);
+                    break;
+                default:
+                    return BadRequest("The requested user is neither student or employer.");
+            }
+
+            result.IsSameUser = currenUserId == id;
+            result.RoleName = roleName;
+            return Ok(result);
+        }
         
         //TODO Depricate
         // POST api/Users/Register
@@ -124,7 +164,7 @@
                 return this.BadRequest(this.ModelState);
             }
 
-            Specialty specialty = this.Data.Specialties.All().Single(s => s.Name == model.Specialty);
+            int specialtyId = this.Data.Specialties.All().Single(s => s.Name == model.Specialty).Id;
 
             var user = new ApplicationUser
             {
@@ -134,6 +174,8 @@
                 LastName = model.LastName,
                 FacultyNumber = model.FacultyNumber,
                 Course = model.Course,
+                GroupId = model.GroupId,
+                SpecialtyId = specialtyId,
                 IsActive = false
             };
 
@@ -147,6 +189,8 @@
             userManager.AddToRole(user.Id, RoleConstants.Student);
 
             Uri locationHeader = this.SendActivationMail(user);
+
+            this.Data.SaveChanges();
 
             return Created(locationHeader, user);
         }
@@ -182,7 +226,43 @@
 
             Uri locationHeader = this.SendActivationMail(user);
 
+            this.Data.SaveChanges();
+
             return Created(locationHeader, user);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = RoleConstants.Admin)]
+        [Route("RegisterTeacher")]
+        public async Task<IHttpActionResult> RegisterTeacher(RegisterTeacherBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                IsActive = true,
+                EmailConfirmed = true
+            };
+
+            IdentityResult result = await this.UserManager.CreateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return this.GetErrorResult(result);
+            }
+
+            userManager.AddToRole(user.Id, RoleConstants.Teacher);
+
+            this.Data.SaveChanges();
+
+            return Ok("Teacher successfully registered");
         }
 
         [HttpGet]
@@ -212,58 +292,74 @@
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize(Roles = RoleConstants.Admin)]
-        [Route("SetUserToActive")]
-        public IHttpActionResult SetUserToActive(string userId = "")
+        [Route("ChangeUserActiveState")]
+        public IHttpActionResult ChangeUserActiveState(string userId, bool active)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
                 return BadRequest("The user ID cannot be null or empty.");
             }
-
-            var db = new ApplicationDbContext();
-            var user = db.Users.FirstOrDefault(u => u.Id == userId);
+            
+            var user = this.Data.Users.All().FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
             {
                 return BadRequest("User with that ID does not exist.");
             }
 
-            user.IsActive = true;
-            db.SaveChanges();
+            user.IsActive = active;
+            this.Data.SaveChanges();
 
-            GeneralMailMessageService.SendEmail(user.Email, "SocialT User was activated", "Your account was successfully activated.");
+            GeneralMailMessageService.SendEmail(user.Email, "SocialT User was activated", "Your account was " + (active ? "activated" : "deactivated"));
 
             return Ok("Successfully changed user acive status.");
         }
 
-        // GET api/Users/UserInfo
-        [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
-        [Route("UserInfo")]
-        [Authorize]
-        public IHttpActionResult GetUserInfo()
+        [HttpGet]
+        //[Authorize(Roles = RoleConstants.Admin)]
+        [Route("GetUserByActivation")]
+        public IHttpActionResult GetUserByActivation()
         {
-            var externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
-            var email = User.Identity.GetUserName();
-
-            var db = new ApplicationDbContext();
-            var user = db.Users.FirstOrDefault(x => x.UserName == email);
-
-            if (user == null)
+            string adminRoleId = this.Data.Roles.All().First(r => r.Name == RoleConstants.Admin).Id;
+            var allUsers = this.Data.Users.All().Where(u => u.Roles.Any(r => r.RoleId != adminRoleId))
+                .OrderBy(u => !u.IsActive).ThenBy(u => u.Email)
+                .Select(ActivationUserViewModel.FromApplicationUser).ToList();
+            foreach (var user in allUsers)
             {
-                return this.BadRequest(string.Format("Username {0} not found", email));
+               string roleName = this.Data.Roles.All().First(r => r.Id == user.RoleId).Name;
+                user.Role = roleName;
             }
-
-            return
-                this.Ok(
-                    new UserInfoViewModel
-                        {
-                            Email = email,
-                            IsDriver = user.IsDriver,
-                            Car = user.Car,
-                        });
+            return Ok(allUsers);
         }
+
+        // GET api/Users/UserInfo
+        //[HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
+        //[Route("UserInfo")]
+        //[Authorize]
+        //public IHttpActionResult GetUserInfo()
+        //{
+        //    var externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
+        //    var email = User.Identity.GetUserName();
+
+        //    var db = new ApplicationDbContext();
+        //    var user = db.Users.FirstOrDefault(x => x.UserName == email);
+
+        //    if (user == null)
+        //    {
+        //        return this.BadRequest(string.Format("Username {0} not found", email));
+        //    }
+
+        //    return
+        //        this.Ok(
+        //            new UserInfoViewModel
+        //                {
+        //                    Email = email,
+        //                    IsDriver = user.IsDriver,
+        //                    Car = user.Car,
+        //                });
+        //}
 
         [Route("Users")]
         public IHttpActionResult GetUsers()
@@ -306,6 +402,31 @@
         {
             this.Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
             return this.Ok();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("SetTeacherPassword")]
+        public async Task<IHttpActionResult> SetTeacherPassword([FromUri]string userId, SetPasswordBindingModel passwordModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
+            if(!this.Data.Users.All().Any(u => u.Id == userId))
+            {
+                return BadRequest("No such user found");
+            }
+            
+            IdentityResult result = await this.UserManager.AddPasswordAsync(userId, passwordModel.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return this.GetErrorResult(result);
+            }
+
+            return this.Ok("Teacher password successfully set.");
         }
         
         protected override void Dispose(bool disposing)
@@ -619,10 +740,12 @@
             this.UserManager.EmailService = new IdentityMessageService();
             string code = UserManager.GenerateEmailConfirmationTokenAsync(user.Id).Result;
             var callbackUrl = new Uri(Url.Link("ConfirmEmailRoute", new { userId = user.Id, code = code }));
-            this.UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>").Wait();
-            Uri locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
+            //TODO uncomment
+            //this.UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>").Wait();
+            //Uri locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
 
-            return locationHeader;
+            //return locationHeader;
+            return null;
         }
 
         private IHttpActionResult GetErrorResult(IdentityResult result)

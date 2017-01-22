@@ -6,6 +6,8 @@
     {
         IRepository<ApplicationUser> Users { get; }
 
+        IRepository<ApplicationRole> Roles { get; }
+
         IRepository<Message> Messages { get; }
 
         IRepository<Group> Groups { get; }

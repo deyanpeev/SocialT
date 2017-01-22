@@ -9,5 +9,7 @@
         public string Content { get; set; }
 
         public string Specialty { get; set; }
+
+        public bool? IsSpecialtyPost { get; set; }
     }
 }

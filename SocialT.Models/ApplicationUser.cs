@@ -76,9 +76,13 @@
             set { this.posts = value; }
         }
 
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
 
-        public virtual int? GroupId { get; set; }
+        public int? SpecialtyId { get; set; }
+
+        public virtual Specialty Specialty { get; set; }
+
+        public int? GroupId { get; set; }
 
         public virtual Group Group { get; set; }
 

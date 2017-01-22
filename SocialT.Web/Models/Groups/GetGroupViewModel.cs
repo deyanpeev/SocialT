@@ -1,4 +1,4 @@
-﻿namespace SocialT.Web.Models.Group
+﻿namespace SocialT.Web.Models.Groups
 {
     using SocialT.Models;
     using System;

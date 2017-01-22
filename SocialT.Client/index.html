@@ -24,12 +24,20 @@
                 </div>
                 <div class="navbar-collapse collapse" id="navbar-main">
                     <ul class="nav navbar-nav">
-                        <li>
-                            <a href="#/virtualMachines">Virtual machines</a>
+                        <li ng-show="vm.identity.isAdmin()">
+                            <a href="#/register-teacher">Register Teacher</a>
+                        </li>
+                        <li ng-show="vm.identity.isAdmin()">
+                            <a href="#/changeUserState">Users</a>
                         </li>
                         <li ng-show="vm.identity.isStudent()">
-                            <!-- TODO change with more appropriate! -->
-                            <a href="#/virtualMachines">Shown Student</a>
+                            <a href="#/user/details">Edit Your Profile</a>
+                        </li>
+                        <li ng-show="vm.identity.isStudent()">
+                            <a href="#/group">Group</a>
+                        </li>
+                        <li ng-show="vm.identity.isStudent()">
+                            <a href="#/specialty">Specialty</a>
                         </li>
                     </ul>
                     <div ng-include="'views/partials/identity/login.html'"></div>
@@ -71,6 +79,18 @@
     <script src="js/identity/identity.js"></script>
     <script src="js/identity/login-controller.js"></script>
     <script src="js/identity/register-controller.js"></script>
+    <script src="js/identity/show-profile-controller.js"></script>
+
+    <script src="js/posts/group-controller.js"></script>
+    <script src="js/posts/specialty-controller.js"></script>
+    <script src="js/posts/posts-service.js"></script>
+    <script src="js/posts/create-post-controller.js"></script>
+
+    <script src="js/admin/manage-users-controller.js"></script>
+    <script src="js/admin/users-service.js"></script>
+
+    <script src="js/student/specialties-service.js"></script>
+    <script src="js/student/group-service.js"></script>
 
     <script src="js/trips/trips-service.js"></script>
     <script src="js/trips/trips-controller.js"></script>

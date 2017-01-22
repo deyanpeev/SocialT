@@ -4,24 +4,41 @@
     function auth($http, $q, identity, authorization, baseServiceUrl) {
         var usersApi = baseServiceUrl + '/api/users'
 
+        var signup = function (user, urlPostfix) {
+            if (!urlPostfix) {
+                urlPostfix = '/register';
+            }
+
+            var deferred = $q.defer();
+            debugger;
+            $http.post(usersApi + urlPostfix, user)
+                .then(function () {
+                    deferred.resolve();
+                }, function (response) {
+                    var error = response.data.modelState;
+                    System.log(error);
+                    if (error && error[Object.keys(error)[0]][0]) {
+                        error = error[Object.keys(error)[0]][0];
+                    }
+
+                    deferred.reject(error);
+                });
+
+            return deferred.promise;
+        }
+
         return {
             signup: function (user) {
-                var deferred = $q.defer();
-
-                $http.post(usersApi + '/register', user)
-                    .then(function () {
-                        deferred.resolve();
-                    }, function (response) {
-                        var error = response.data.modelState;
-                        System.log(error);
-                        if(error && error[Object.keys(error)[0]][0]){
-                            error = error[Object.keys(error)[0]][0];
-                        } 
-
-                        deferred.reject(error);
-                    });
-
-                return deferred.promise;
+                return signup(user);
+            },
+            signupTeacher: function (user) {
+                return signup(user, '/registerTeacher');
+            },
+            signupStudent: function (user) {
+                return signup(user, '/registerStudent');
+            },
+            signupEmployer: function (user) {
+                return signup(user, '/registerEmployer');
             },
             login: function (user) {
                 var deferred = $q.defer();

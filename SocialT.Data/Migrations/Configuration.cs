@@ -143,6 +143,7 @@ namespace SocialT.Data.Migrations
                 manager.Create(role);
             }
 
+            context.SaveChanges();
             return roles;
         }
 
@@ -172,6 +173,7 @@ namespace SocialT.Data.Migrations
                 context.Specialties.Add(specialty);
             }
 
+            context.SaveChanges();
             return specialties;
         }
 
@@ -202,6 +204,7 @@ namespace SocialT.Data.Migrations
                 context.Skills.Add(skill);
             }
 
+            context.SaveChanges();
             return skills;
         }
 
@@ -213,12 +216,13 @@ namespace SocialT.Data.Migrations
                 Group group = new Group
                 {
                     Name = i.ToString(),
-                    SpecialtyId = random.Next(0, specialties.Count)
+                    Specialty = specialties[random.Next(specialties.Count)]
                 };
                 groups.Add(group);
                 context.Groups.Add(group);
             }
 
+            context.SaveChanges();
             return groups;
         }
 
@@ -243,6 +247,7 @@ namespace SocialT.Data.Migrations
                     IsDriver = isDriver,
                     Car = car,
                     EmailConfirmed = true,
+                    IsActive = true,
                     PhoneNumber = "0" + i.ToString().PadLeft(10, '3')
                 };
 
@@ -260,9 +265,12 @@ namespace SocialT.Data.Migrations
                         {
                             user.Skills.Add(skills[j]);
                         }
+                        user.FacultyNumber = random.Next(100000, 999999).ToString();
                         user.Course = random.Next(1, 4);
                         user.Grade = random.NextDouble() * (6 - 2) + 2;
-                        user.Group = groups[random.Next(0, groups.Count)];
+                        var group = groups[random.Next(0, groups.Count)];
+                        user.Group = group;
+                        user.Specialty = group.Specialty;
                         user.Interests = new string[] { "Auto generated interest" };
                         user.StrongAreas = new string[] { "Auto generated strong area" };
                         break;
@@ -278,6 +286,7 @@ namespace SocialT.Data.Migrations
                 }
             }
 
+            context.SaveChanges();
             return users;
         }
 

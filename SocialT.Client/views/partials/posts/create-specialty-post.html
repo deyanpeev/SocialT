@@ -1,0 +1,31 @@
+﻿<<div class="container">
+    <div class="well">
+        <form name="postForm" class="form-horizontal">
+            <fieldset>
+                <legend>Create New Post</legend>
+                <div ng-show="!vm.identity.isStudent()" class="form-group">
+                    <label class="col-md-2 control-label">Specialty</label>
+                    <div class="col-md-10">
+                        <select class="form-control" ng-model="vm.post.specialty" ng-required="!vm.identity.isStudent()" id="specialty">
+                            <option ng-repeat="specialty in vm.specialties" value="{{specialty}}">
+                                {{specialty}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label" for="content">Content</label>
+                    <div class="col-md-10">
+                        <textarea id="content" type="text" placeholder="Content" ng-model="vm.post.content" required="required" ng-minlength="5" ng-maxlength="300" class="form-control" />
+                    </div>
+                </div>
+                <div class="pull-right">
+                    <button ng-click="vm.createSpecialtyPost(vm.post)" ng-disabled="postForm.$invalid" class="btn btn-primary">
+                        Create
+                    </button>
+                    <a href="#/" class="btn btn-primary">Cancel</a>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>

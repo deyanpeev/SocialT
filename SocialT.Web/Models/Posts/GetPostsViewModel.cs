@@ -13,17 +13,17 @@
             {
                 return p => new GetPostsViewModel()
                 {
-                    Id = p.Id,
                     Content = p.Content,
                     CreatedAt = p.CreatedAt,
-                    UserFromName = p.UserFrom.CompanyName ?? p.UserFrom.FirstName + " " + p.UserFrom.LastName
+                    UserFromName = p.UserFrom.CompanyName ?? p.UserFrom.FirstName + " " + p.UserFrom.LastName,
+                    UserFromId = p.UserFromId
                 };
             }
         }
 
-        public int Id { get; set; }
-
         public string Content { get; set; }
+
+        public string UserFromId { get; set; }
 
         public string UserFromName { get; set; }
 

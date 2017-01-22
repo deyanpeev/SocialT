@@ -17,7 +17,9 @@
             Configuration.LazyLoadingEnabled = false;
         }
 
-        public IDbSet<Message> Posts { get; set; }
+        public IDbSet<Post> Posts { get; set; }
+
+        public IDbSet<Message> Messages { get; set; }
 
         public IDbSet<Group> Groups { get; set; }
 
@@ -50,6 +52,8 @@
             modelBuilder.Entity<Trip>()
                 .HasMany(m => m.Passengers)
                 .WithMany(m => m.Trips);
+
+            //TODO Modify
         }
     }
 }

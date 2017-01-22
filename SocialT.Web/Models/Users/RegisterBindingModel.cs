@@ -1,6 +1,6 @@
 namespace  SocialT.Web.Models.Users
 {
-    using System.ComponentModel.DataAnnotations;
+    using global::System.ComponentModel.DataAnnotations;
 
     public class RegisterBindingModel
     {

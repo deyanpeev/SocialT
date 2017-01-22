@@ -6,7 +6,7 @@
 
         vm.identity = identity;
 
-        var id = $routeParams.id    //routeParams[id]
+        var id = $routeParams.id;    //routeParams[id]
 
         trips.getTripById(id)
             .then(function (trip) {

@@ -60,7 +60,7 @@
             }
 
             //if user active == true => user is eighter employer or student
-            if (user.IsActive != null && !((bool)user.IsActive))
+            if (!user.IsActive)
             {
                 context.SetError("invalid_grant", "User is not actived by any of the teachers.");
                 return;

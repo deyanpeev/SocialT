@@ -97,6 +97,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http.Extensions, Version=2.2.20.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.20\lib\net45\System.Net.Http.Extensions.dll</HintPath>
@@ -115,7 +116,6 @@
     </Reference>
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -240,6 +240,7 @@
     <Compile Include="Controllers\CitiesController.cs" />
     <Compile Include="Controllers\DriversController.cs" />
     <Compile Include="Controllers\GroupsController.cs" />
+    <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Controllers\PostsController.cs" />
     <Compile Include="Controllers\SkillsController.cs" />
     <Compile Include="Controllers\SpecialtiesController.cs" />
@@ -256,25 +257,33 @@
     <Compile Include="Models\Drivers\DriverViewModel.cs" />
     <Compile Include="Models\Drivers\DriverWithTripsViewModel.cs" />
     <Compile Include="Models\Drivers\GetDriversBindingModel.cs" />
-    <Compile Include="Models\Group\GetGroupViewModel.cs" />
+    <Compile Include="Models\Groups\GetGroupViewModel.cs" />
+    <Compile Include="Models\Messages\GetMessagesViewModel.cs" />
+    <Compile Include="Models\Messages\SentMessageViewModel.cs" />
     <Compile Include="Models\Posts\CreatePostViewModel.cs" />
     <Compile Include="Models\Posts\GetPostsViewModel.cs" />
+    <Compile Include="Models\Skills\EndorseSkill.cs" />
+    <Compile Include="Models\Specialties\GetSpecialtiesViewModel.cs" />
     <Compile Include="Models\Stats\StatsViewModel.cs" />
     <Compile Include="Models\Trips\CreateTripBindingModel.cs" />
     <Compile Include="Models\Trips\GetTripsBindingModel.cs" />
     <Compile Include="Models\Trips\TripInfoViewModel.cs" />
     <Compile Include="Models\Trips\TripViewModel.cs" />
-    <Compile Include="Models\Users\System\AddExternalLoginBindingModel.cs" />
-    <Compile Include="Models\Users\System\ChangePasswordBindingModel.cs" />
-    <Compile Include="Models\Users\System\ExternalLoginViewModel.cs" />
-    <Compile Include="Models\Users\System\ManageInfoViewModel.cs" />
+    <Compile Include="Models\Users\ActivationUserViewModel.cs" />
+    <Compile Include="Models\Users\Buildin\AddExternalLoginBindingModel.cs" />
+    <Compile Include="Models\Users\Buildin\ChangePasswordBindingModel.cs" />
+    <Compile Include="Models\Users\Buildin\ExternalLoginViewModel.cs" />
+    <Compile Include="Models\Users\Buildin\ManageInfoViewModel.cs" />
+    <Compile Include="Models\Users\InfoModels\EmployerInfoModel.cs" />
+    <Compile Include="Models\Users\InfoModels\IUserInfoModel.cs" />
+    <Compile Include="Models\Users\InfoModels\StudentInfoModel.cs" />
     <Compile Include="Models\Users\RegisterBindingModel.cs" />
     <Compile Include="Models\Users\RegisterEmpoyerModel.cs" />
-    <Compile Include="Models\Users\System\RegisterExternalBindingModel.cs" />
+    <Compile Include="Models\Users\Buildin\RegisterExternalBindingModel.cs" />
     <Compile Include="Models\Users\RegisterStudentModel.cs" />
-    <Compile Include="Models\Users\System\RemoveLoginBindingModel.cs" />
-    <Compile Include="Models\Users\System\SetPasswordBindingModel.cs" />
-    <Compile Include="Models\Users\UserInfoViewModel.cs" />
+    <Compile Include="Models\Users\Buildin\RemoveLoginBindingModel.cs" />
+    <Compile Include="Models\Users\Buildin\SetPasswordBindingModel.cs" />
+    <Compile Include="Models\Users\RegisterTeacherBindingModel.cs" />
     <Compile Include="Models\Users\UserLoginInfoViewModel.cs" />
     <Compile Include="Models\VirtualMachines\VirtualMachinePublicViewModel.cs" />
     <Compile Include="Models\VirtualMachines\VirtualMachineRequestCreateModel.cs" />

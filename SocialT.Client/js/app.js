@@ -37,7 +37,47 @@
             })
             .when('/register', {
                 templateUrl: PARTIALS_PREFIX + 'identity/register.html',
+                controller: 'SignUpCtrl',
+                controllerAs: CONTROLLER_AS_VIEW_MODEL
+            })
+            .when('/register-teacher', {
+                templateUrl: PARTIALS_PREFIX + 'identity/register-teacher.html',
                 controller: 'SignUpCtrl'
+            })
+            .when('/user/details', {
+                templateUrl: PARTIALS_PREFIX + 'identity/show-user-details.html',
+                controller: 'ShowProfileController',
+                controllerAs: CONTROLLER_AS_VIEW_MODEL
+            })
+            .when('/user/details/:id', {
+                templateUrl: PARTIALS_PREFIX + 'identity/show-user-details.html',
+                controller: 'ShowProfileController',
+                controllerAs: CONTROLLER_AS_VIEW_MODEL
+            })
+            .when('/changeUserState', {
+                templateUrl: PARTIALS_PREFIX + 'identity/change-user-active-state.html',
+                controller: 'ManageUsersController',
+                controllerAs: CONTROLLER_AS_VIEW_MODEL
+            })
+            .when('/group', {
+                templateUrl: PARTIALS_PREFIX + 'students/group.html',
+                controller: 'GroupController',
+                controllerAs: CONTROLLER_AS_VIEW_MODEL
+            })
+            .when('/specialty', {
+                templateUrl: PARTIALS_PREFIX + 'students/specialty.html',
+                controller: 'SpecialtyController',
+                controllerAs: CONTROLLER_AS_VIEW_MODEL
+            })
+            .when('/posts/createGroupPost', {
+                templateUrl: PARTIALS_PREFIX + 'posts/create-group-post.html',
+                controller: 'CreatePostController',
+                controllerAs: CONTROLLER_AS_VIEW_MODEL
+            })
+            .when('/posts/createSpecialtyPost', {
+                templateUrl: PARTIALS_PREFIX + 'posts/create-specialty-post.html',
+                controller: 'CreatePostController',
+                controllerAs: CONTROLLER_AS_VIEW_MODEL
             })
             .when('/virtualMachines', {
                 templateUrl: PARTIALS_PREFIX + 'vms/all-vms.html',

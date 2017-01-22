@@ -6,24 +6,112 @@
                 <div class="form-group">
                     <label for="email" class="col-md-2 control-label">E-mail</label>
                     <div class="col-md-10">
-                        <input id="email" type="text" placeholder="E-mail" ng-model="user.email" ng-pattern="/^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/" required="required" class="form-control"/>
+                        <input id="email" type="text" placeholder="E-mail" ng-model="user.email" ng-pattern="/^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/" required="required" class="form-control" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="password" class="col-md-2 control-label">Password</label>
                     <div class="col-md-10">
-                        <input id="password" type="password" placeholder="Password" ng-model="user.password" required="required" class="form-control"/>
+                        <input id="password" type="password" placeholder="Password" ng-model="user.password" required="required" class="form-control" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="confirmation" class="col-md-2 control-label">Confirm Password</label>
                     <div class="col-md-10">
-                        <input id="confirmation" type="password" placeholder="Username" ng-model="user.confirmPassword" required="required" class="form-control"/>
+                        <input id="confirmation" type="password" placeholder="Username" ng-model="user.confirmPassword" required="required" class="form-control" />
                     </div>
                 </div>
 
                 <div class="form-group">
+                    <label class="col-md-2 control-label">User type</label>
+                    <div class="col-md-10">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-primary" ng-click="markStudent()">
+                                <input type="radio" name="userType" id="option-student" value="Student" />
+                                Student
+                            </label>
+                            <label class="btn btn-primary" ng-click="markEmployer()">
+                                <input type="radio" name="userType" id="option-employer" value="Employer" />
+                                Employer
+                            </label>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-show="userType == 'Student'" class="form-group">
+                    <label class="col-md-2 control-label">First name</label>
+                    <div class="col-md-10">
+                        <input id="firstName" type="text" placeholder="First name" ng-model="user.firstName" ng-required="userType == 'Student'" ng-minlength="2" ng-maxlength="100" class="form-control" />
+                    </div>
+                </div>
+
+                <div ng-show="userType == 'Student'" class="form-group">
+                    <label class="col-md-2 control-label">Last name</label>
+                    <div class="col-md-10">
+                        <input id="lastName" type="text" placeholder="Last name" ng-model="user.lastName" ng-required="userType == 'Student'" ng-minlength="2" ng-maxlength="100" class="form-control" />
+                    </div>
+                </div>
+
+                <div ng-show="userType == 'Student'" class="form-group">
+                    <label class="col-md-2 control-label">Faculty Number</label>
+                    <div class="col-md-10">
+                        <input id="lastName" type="text" placeholder="Last name" ng-model="user.facultyNumber" ng-required="userType == 'Student'" ng-minlength="2" ng-maxlength="100" class="form-control" />
+                    </div>
+                </div>
+
+                <div ng-show="userType == 'Student'" class="form-group">
+                    <label class="col-md-2 control-label">Cource</label>
+                    <div class="col-md-10">
+                        <input id="course" type="number" placeholder="Cource" ng-model="user.course" ng-required="userType == 'Student'" min="1" max="4" class="form-control" />
+                    </div>
+                </div>
+
+                <div ng-show="userType == 'Student'" class="form-group">
+                    <label class="col-md-2 control-label">Specialty</label>
+                    <div class="col-md-10">
+                        <select class="form-control" ng-init="user.specialty='Aviation Equipment and Technologies'" ng-model="user.specialty" ng-required="userType == 'Student'" id="specialty">
+                            <option ng-repeat="specialty in specialties" value="{{specialty}}">
+                                {{specialty}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div ng-show="userType == 'Student'" class="form-group">
+                    <label class="col-md-2 control-label">Group</label>
+                    <div class="col-md-10">
+                        <select class="form-control" ng-init="user.group='20'" ng-model="user.group" ng-required="userType == 'Student'" id="group">
+                            <option ng-repeat="group in groups | filter:user.specialty:strict" value="{{group.id}}">
+                                {{group.name}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div ng-show="userType == 'Employer'" class="form-group">
+                    <label class="col-md-2 control-label">Company</label>
+                    <div class="col-md-10">
+                        <input id="company" type="text" placeholder="Company" ng-model="user.companyName" ng-required="userType == 'Employer'" ng-minlength="3" ng-maxlength="100" class="form-control" />
+                    </div>
+                </div>
+
+                <div ng-show="userType == 'Employer'" class="form-group">
+                    <label class="col-md-2 control-label">Company Moto</label>
+                    <div class="col-md-10">
+                        <input id="companyMoto" type="text" placeholder="Company Moto" ng-model="user.companyMoto" ng-maxlength="100" class="form-control" />
+                    </div>
+                </div>
+
+                <div ng-show="userType == 'Employer'" class="form-group">
+                    <label class="col-md-2 control-label">Description</label>
+                    <div class="col-md-10">
+                        <textarea id="companyDescription" placeholder="Description" ng-model="user.description" class="form-control" />
+                    </div>
+                </div>
+
+                <!--<div class="form-group">
                     <label for="is-driver" class="col-md-2 control-label">Driver</label>
                     <div class="col-md-3">
                         <input id="is-driver" type="checkbox" ng-model="user.isDriver" class="checkbox" />
@@ -35,10 +123,10 @@
                     <div class="col-md-10">
                         <input id="car" type="text" placeholder="Car" ng-model="user.car" class="form-control" />
                     </div>
-                </div>
+                </div>-->
 
                 <div class="pull-right">
-                    <button ng-click="signup(user)" ng-disabled="signUpForm.$invalid || (user.isDriver && (!user.car || user.car.length == 0))" class="btn btn-primary">
+                    <button ng-click="signup(user)" ng-disabled="signUpForm.$invalid" class="btn btn-primary">
                         Create
                     </button>
                     <a href="#/" class="btn btn-primary">Cancel</a>

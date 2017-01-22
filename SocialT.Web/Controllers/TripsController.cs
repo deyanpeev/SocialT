@@ -38,7 +38,7 @@
             var tripData =
                 this.Data.Trips.All()
                     .Where(trip => trip.Id == tripId)
-                    .Select(TripViewModel.FromTrip(currentUserName))
+                    //.Select(TripViewModel.FromTrip(currentUserName))
                     .FirstOrDefault();
 
             if (tripData == null)

@@ -15,7 +15,7 @@
 
         public string Name { get; set; }
         
-        public virtual int SpecialtyId { get; set; }
+        public int SpecialtyId { get; set; }
 
         public virtual Specialty Specialty { get; set; }
 

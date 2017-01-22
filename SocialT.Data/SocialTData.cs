@@ -31,6 +31,14 @@
             }
         }
 
+        public IRepository<ApplicationRole> Roles
+        {
+            get
+            {
+                return this.GetRepository<ApplicationRole>();
+            }
+        }
+
         public IRepository<Skill> Skills
         {
             get

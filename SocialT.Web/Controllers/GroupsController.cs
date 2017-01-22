@@ -4,9 +4,10 @@
     using SocialT.Data;
     using System.Collections.Generic;
     using System.Web.Http;
-    using SocialT.Web.Models.Group;
+    using SocialT.Web.Models.Groups;
     using Common.Constants;
     using SocialT.Models;
+    using Microsoft.AspNet.Identity;
 
     public class GroupsController : BaseApiController
     {
@@ -22,8 +23,7 @@
 
         [HttpGet]
         [AllowAnonymous]
-        [Route("api/Groups/GetAllGroups")]
-        public IHttpActionResult GetAllGorups()
+        public IHttpActionResult Get()
         {
             var result = this.Data.Groups.All().Select(GetGroupViewModel.FromGroup);
             return Ok(result);
@@ -31,11 +31,23 @@
 
         [HttpGet]
         [AllowAnonymous]
-        [Route("api/Groups/GetAllGroupsBySpecialty")]
-        public IHttpActionResult GetAllGorupsBySpecialty(int specialtyId)
+        public IHttpActionResult Get(string specialtyName)
         {
+            int specialtyId = this.Data.Specialties.All().Single(s => s.Name == specialtyName).Id;
             GetGroupViewModel result = this.Data.Groups.All().Select(GetGroupViewModel.FromGroup)
                 .First(g => g.SpecialtyId == specialtyId);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Authorize(Roles =RoleConstants.Student)]
+        [Route("api/Groups/GetGroupByCurrentUser")]
+        public IHttpActionResult GetGroupByCurrentUser()
+        {
+            var currentUserId = User.Identity.GetUserId();
+            int currentUserGroupId = (int)this.Data.Users.All().Single(x => x.Id == currentUserId).GroupId;
+
+            var result = this.Data.Groups.All().Select(GetGroupViewModel.FromGroup).Single(g => g.Id == currentUserGroupId);
             return Ok(result);
         }
 

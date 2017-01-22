@@ -5,6 +5,7 @@
     using System.Web.Http;
 
     using SocialT.Data;
+    using SocialT.Web.Models.Specialties;
 
     public class SpecialtiesController : BaseApiController
     {
@@ -23,11 +24,11 @@
         /// </summary>
         /// <returns>List of strings with all cities sorted by name</returns>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IHttpActionResult Get()
         {
             var specialties = this.Data.Specialties.All().Select(s => s.Name).ToList();
             specialties.Sort();
-            return specialties;
+            return Ok(specialties);
         }
     }
 }

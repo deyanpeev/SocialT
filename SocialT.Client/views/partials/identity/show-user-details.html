@@ -1,0 +1,101 @@
+﻿<div class="panel-body">
+    <div class="container">
+        <div class="well">
+            <h1 class="text-center well">{{vm.profile.email}}</h1>
+            <form name="vm.userForm" class="form-horizontal">
+                <fieldset>
+                    <div class="form-group">
+                        <label for="email" class="col-md-2 control-label">E-mail</label>
+                        <div class="col-md-10">
+                            <input id="email" type="text" placeholder="E-mail" ng-model="vm.profile.email" required="required" class="form-control" ng-disabled="true" />
+                        </div>
+                    </div>
+
+                    <div ng-show="vm.isStudent" class="form-group">
+                        <label class="col-md-2 control-label">First name</label>
+                        <div class="col-md-10">
+                            <input id="firstName" type="text" placeholder="First name" ng-model="vm.profile.firstName" ng-required="vm.isStudent" ng-minlength="2" ng-maxlength="100" class="form-control" ng-disabled="!vm.profile.isSameUser" />
+                        </div>
+                    </div>
+
+                    <div ng-show="vm.isStudent" class="form-group">
+                        <label class="col-md-2 control-label">Last name</label>
+                        <div class="col-md-10">
+                            <input id="lastName" type="text" placeholder="Last name" ng-model="vm.profile.lastName" ng-required="vm.isStudent" ng-minlength="2" ng-maxlength="100" class="form-control" ng-disabled="!vm.profile.isSameUser" />
+                        </div>
+                    </div>
+
+                    <div ng-show="vm.isStudent" class="form-group">
+                        <label class="col-md-2 control-label">Cource</label>
+                        <div class="col-md-10">
+                            <input id="course" type="number" placeholder="Cource" ng-model="vm.profile.course" ng-required="vm.isStudent" min="1" max="4" class="form-control" ng-disabled="!vm.profile.isSameUser" />
+                        </div>
+                    </div>
+
+                    <div ng-show="vm.isStudent" class="form-group">
+                        <label class="col-md-2 control-label">Specialty</label>
+                        <div class="col-md-10">
+                            <input id="course" type="text" ng-model="vm.profile.specialty" class="form-control" ng-disabled="true" />
+                        </div>
+                    </div>
+
+                    <div ng-show="vm.isStudent" class="form-group">
+                        <label class="col-md-2 control-label">Group</label>
+                        <div class="col-md-10">
+                            <input id="course" type="text" ng-model="vm.profile.group" class="form-control" ng-disabled="true" />
+                        </div>
+                    </div>
+
+                    <div ng-show="vm.isStudent" class="form-group">
+                        <label class="col-md-2 control-label">Skills</label>
+                        <div class="col-md-10">
+                            <ng-form name="vm.skillForm">
+                                <div class="input-group" ng-repeat="skill in vm.profile.skills">
+                                    <span class="input-group-addon">{{skill.endorsements.length}}</span>
+                                    <button type="button" class="btn btn-info">{{skill.name}}</button>
+                                </div>
+                                <div class="input-group">
+                                    <input id="course" type="text" ng-model="vm.profile.newSkill" class="form-control" ng-minlength="2" ng-maxlength="20" />
+
+                                    <span class="input-group-btn">
+                                        <button ng-click="" ng-disabled="vm.skillForm.$invalid" class="btn btn-sm btn-primary">
+                                            Add
+                                        </button>
+                                    </span>
+                                </div>
+                            </ng-form>
+                        </div>
+                    </div>
+
+                    <div ng-show="vm.isEmployer" class="form-group">
+                        <label class="col-md-2 control-label">Company</label>
+                        <div class="col-md-10">
+                            <input id="company" type="text" placeholder="Company" ng-model="vm.profile.companyName" ng-required="vm.isEmployer" ng-minlength="3" ng-maxlength="100" class="form-control" ng-disabled="!vm.profile.isSameUser" />
+                        </div>
+                    </div>
+
+                    <div ng-show="vm.isEmployer" class="form-group">
+                        <label class="col-md-2 control-label">Company Moto</label>
+                        <div class="col-md-10">
+                            <input id="companyMoto" type="text" placeholder="Company Moto" ng-model="vm.profile.companyMoto" ng-maxlength="100" class="form-control" ng-disabled="!vm.profile.isSameUser" />
+                        </div>
+                    </div>
+
+                    <div ng-show="vm.isEmployer" class="form-group">
+                        <label class="col-md-2 control-label">Description</label>
+                        <div class="col-md-10">
+                            <textarea id="companyDescription" placeholder="Description" ng-model="vm.profile.description" class="form-control" ng-disabled="!vm.profile.isSameUser" />
+                        </div>
+                    </div>
+
+                    <div class="pull-right">
+                        <button ng-click="" ng-disabled="vm.userForm.$invalid" class="btn btn-primary">
+                            Save
+                        </button>
+                        <a href="#/" class="btn btn-primary">Cancel</a>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
