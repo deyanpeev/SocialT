@@ -6,25 +6,25 @@
                 <div class="form-group">
                     <label for="email" class="col-md-2 control-label">E-mail</label>
                     <div class="col-md-10">
-                        <input id="email" type="text" placeholder="E-mail" ng-model="user.email" ng-pattern="/^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/" required="required" class="form-control" />
+                        <input id="email" type="text" placeholder="E-mail" ng-model="vm.user.email" ng-pattern="/^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/" required="required" class="form-control" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-md-2 control-label">First name</label>
                     <div class="col-md-10">
-                        <input id="firstName" type="text" placeholder="First name" ng-model="user.firstName" required="required" ng-minlength="2" ng-maxlength="100" class="form-control" />
+                        <input id="firstName" type="text" placeholder="First name" ng-model="vm.user.firstName" required="required" ng-minlength="2" ng-maxlength="100" class="form-control" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-md-2 control-label">Last name</label>
                     <div class="col-md-10">
-                        <input id="lastName" type="text" placeholder="Last name" ng-model="user.lastName" required="required" ng-minlength="2" ng-maxlength="100" class="form-control" />
+                        <input id="lastName" type="text" placeholder="Last name" ng-model="vm.user.lastName" required="required" ng-minlength="2" ng-maxlength="100" class="form-control" />
                     </div>
                 </div>
 
                 <div class="pull-right">
-                    <button ng-click="signup(user, true)" ng-disabled="signUpForm.$invalid" class="btn btn-primary">
+                    <button ng-click="signup(vm.user, true)" ng-disabled="signUpForm.$invalid" class="btn btn-primary">
                         Create
                     </button>
                     <a href="#/" class="btn btn-primary">Cancel</a>

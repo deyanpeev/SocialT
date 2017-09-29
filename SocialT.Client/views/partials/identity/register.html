@@ -57,7 +57,7 @@
                 <div ng-show="userType == 'Student'" class="form-group">
                     <label class="col-md-2 control-label">Faculty Number</label>
                     <div class="col-md-10">
-                        <input id="lastName" type="text" placeholder="Last name" ng-model="user.facultyNumber" ng-required="userType == 'Student'" ng-minlength="2" ng-maxlength="100" class="form-control" />
+                        <input id="lastName" type="text" placeholder="Faculty Number" ng-model="user.facultyNumber" ng-required="userType == 'Student'" ng-minlength="2" ng-maxlength="100" class="form-control" />
                     </div>
                 </div>
 
@@ -82,7 +82,7 @@
                 <div ng-show="userType == 'Student'" class="form-group">
                     <label class="col-md-2 control-label">Group</label>
                     <div class="col-md-10">
-                        <select class="form-control" ng-init="user.group='20'" ng-model="user.group" ng-required="userType == 'Student'" id="group">
+                        <select class="form-control" ng-init="user.groupId='20'" ng-model="user.groupId" ng-required="userType == 'Student'" id="group">
                             <option ng-repeat="group in groups | filter:user.specialty:strict" value="{{group.id}}">
                                 {{group.name}}
                             </option>

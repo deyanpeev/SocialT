@@ -15,7 +15,11 @@
                 .then(function () {
                     deferred.resolve();
                 }, function (response) {
+                    debugger;
                     var error = response.data.modelState;
+                    if (!error) {
+                        response.data.message;
+                    }
                     System.log(error);
                     if (error && error[Object.keys(error)[0]][0]) {
                         error = error[Object.keys(error)[0]][0];

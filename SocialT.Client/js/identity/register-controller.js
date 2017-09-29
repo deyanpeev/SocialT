@@ -16,14 +16,7 @@
         $scope.signup = function (user, isTeacher) {
             var promise = null;
             if ($scope.userType == STUDENT) {
-                promise = auth.signupStudent(user).then(function () {
-                    debugger;
-                    notifier.success('Registration successful!');
-                    $location.path('/');
-                }, function (error) {
-                    debugger;
-                    notifier.error(error);
-                });
+                promise = auth.signupStudent(user);
             } else if ($scope.userType == EMPLOYER) {
                 promise = auth.signupEmployer(user);
             } else if (isTeacher) {
@@ -31,11 +24,9 @@
             }
             
             promise.then(function () {
-                debugger;
                 notifier.success('Registration successful!');
                 $location.path('/');
             }, function (error) {
-                debugger;
                 notifier.error(error);
             })
         }

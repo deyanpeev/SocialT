@@ -93,7 +93,7 @@
             string currenUserId = User.Identity.GetUserId();
 
             string roleId = this.Data.Users.All()
-                .Select(u => new { Id = u.Id, Role = u.Roles.FirstOrDefault()})
+                .Select(u => new { Id = u.Id, Role = u.Roles.FirstOrDefault() })
                 .FirstOrDefault(u => u.Id == id).Role.RoleId;
             string roleName = this.Data.Roles.All().First(r => r.Id == roleId).Name;
             //string userRole = this.Data.Roles.All().FirstOrDefault(r => r.Id == roleId).Name;
@@ -110,14 +110,15 @@
                     result = this.Data.Users.All().Select(EmployerInfoModel.FromAppUser).FirstOrDefault(u => u.Id == id);
                     break;
                 default:
-                    return BadRequest("The requested user is neither student or employer.");
+                    result = this.Data.Users.All().Select(IUserInfoModel.FromAppUser).FirstOrDefault(u => u.Id == id);
+                    break;
             }
 
             result.IsSameUser = currenUserId == id;
             result.RoleName = roleName;
             return Ok(result);
         }
-        
+
         //TODO Depricate
         // POST api/Users/Register
         [AllowAnonymous]
@@ -277,23 +278,17 @@
 
             if (this.UserManager.UserTokenProvider == null)
             {
-                var provider = new DpapiDataProtectionProvider("SocialT ");
+                var provider = new DpapiDataProtectionProvider("SocialT");
                 this.UserManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(provider.Create("EmailConfirmation"));
             }
-            IdentityResult result = await this.UserManager.ConfirmEmailAsync(userId, code);
+            this.Data.Users.GetById(userId).EmailConfirmed = true;
+            this.Data.SaveChanges();
 
-            if (result.Succeeded)
-            {
-                return Ok();
-            }
-            else
-            {
-                return GetErrorResult(result);
-            }
+            return Ok();
         }
 
         [HttpPost]
-        [Authorize(Roles = RoleConstants.Admin)]
+        [Authorize(Roles = RoleConstants.Admin + "," + RoleConstants.Teacher)]
         [Route("ChangeUserActiveState")]
         public IHttpActionResult ChangeUserActiveState(string userId, bool active)
         {
@@ -301,7 +296,7 @@
             {
                 return BadRequest("The user ID cannot be null or empty.");
             }
-            
+
             var user = this.Data.Users.All().FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
@@ -323,49 +318,16 @@
         public IHttpActionResult GetUserByActivation()
         {
             string adminRoleId = this.Data.Roles.All().First(r => r.Name == RoleConstants.Admin).Id;
-            var allUsers = this.Data.Users.All().Where(u => u.Roles.Any(r => r.RoleId != adminRoleId))
+            string teacherRoleId = this.Data.Roles.All().First(r => r.Name == RoleConstants.Teacher).Id;
+            var allUsers = this.Data.Users.All().Where(u => u.Roles.Any(r => r.RoleId != adminRoleId && r.RoleId != teacherRoleId))
                 .OrderBy(u => !u.IsActive).ThenBy(u => u.Email)
                 .Select(ActivationUserViewModel.FromApplicationUser).ToList();
             foreach (var user in allUsers)
             {
-               string roleName = this.Data.Roles.All().First(r => r.Id == user.RoleId).Name;
+                string roleName = this.Data.Roles.All().First(r => r.Id == user.RoleId).Name;
                 user.Role = roleName;
             }
             return Ok(allUsers);
-        }
-
-        // GET api/Users/UserInfo
-        //[HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
-        //[Route("UserInfo")]
-        //[Authorize]
-        //public IHttpActionResult GetUserInfo()
-        //{
-        //    var externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
-        //    var email = User.Identity.GetUserName();
-
-        //    var db = new ApplicationDbContext();
-        //    var user = db.Users.FirstOrDefault(x => x.UserName == email);
-
-        //    if (user == null)
-        //    {
-        //        return this.BadRequest(string.Format("Username {0} not found", email));
-        //    }
-
-        //    return
-        //        this.Ok(
-        //            new UserInfoViewModel
-        //                {
-        //                    Email = email,
-        //                    IsDriver = user.IsDriver,
-        //                    Car = user.Car,
-        //                });
-        //}
-
-        [Route("Users")]
-        public IHttpActionResult GetUsers()
-        {
-            throw new NotImplementedException("Not imeplemented");
-            //return Ok(this.AppUserManager.Users.ToList().Select(u => this.TheModelFactory.Create(u)));
         }
 
         [Route("user/{id:guid}", Name = "GetUserById")]
@@ -414,11 +376,11 @@
                 return this.BadRequest(this.ModelState);
             }
 
-            if(!this.Data.Users.All().Any(u => u.Id == userId))
+            if (!this.Data.Users.All().Any(u => u.Id == userId))
             {
                 return BadRequest("No such user found");
             }
-            
+
             IdentityResult result = await this.UserManager.AddPasswordAsync(userId, passwordModel.NewPassword);
 
             if (!result.Succeeded)
@@ -428,7 +390,7 @@
 
             return this.Ok("Teacher password successfully set.");
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -450,16 +412,16 @@
                 return null;
             }
 
-           var logins = new List<UserLoginInfoViewModel>();
+            var logins = new List<UserLoginInfoViewModel>();
 
             foreach (IdentityUserLogin linkedAccount in user.Logins)
             {
                 logins.Add(
                     new UserLoginInfoViewModel
-                        {
-                            LoginProvider = linkedAccount.LoginProvider,
-                            ProviderKey = linkedAccount.ProviderKey
-                        });
+                    {
+                        LoginProvider = linkedAccount.LoginProvider,
+                        ProviderKey = linkedAccount.ProviderKey
+                    });
             }
 
             if (user.PasswordHash != null)
@@ -469,12 +431,12 @@
             }
 
             return new ManageInfoViewModel
-                       {
-                           LocalLoginProvider = LocalLoginProvider,
-                           Email = user.UserName,
-                           Logins = logins,
-                           ExternalLoginProviders = this.GetExternalLogins(returnUrl, generateState)
-                       };
+            {
+                LocalLoginProvider = LocalLoginProvider,
+                Email = user.UserName,
+                Logins = logins,
+                ExternalLoginProviders = this.GetExternalLogins(returnUrl, generateState)
+            };
         }
 
         // POST api/Users/ChangePassword
@@ -669,22 +631,22 @@
             foreach (AuthenticationDescription description in descriptions)
             {
                 var login = new ExternalLoginViewModel
-                                {
-                                    Name = description.Caption,
-                                    Url =
+                {
+                    Name = description.Caption,
+                    Url =
                                         Url.Route(
                                             "ExternalLogin",
                                             new
-                                                {
-                                                    provider = description.AuthenticationType,
-                                                    response_type = "token",
-                                                    client_id = Startup.PublicClientId,
-                                                    redirect_uri =
+                                            {
+                                                provider = description.AuthenticationType,
+                                                response_type = "token",
+                                                client_id = Startup.PublicClientId,
+                                                redirect_uri =
                                         new Uri(Request.RequestUri, returnUrl).AbsoluteUri,
-                                                    state = state
-                                                }),
-                                    State = state
-                                };
+                                                state = state
+                                            }),
+                    State = state
+                };
                 logins.Add(login);
             }
 
@@ -738,14 +700,15 @@
                 };
             }
             this.UserManager.EmailService = new IdentityMessageService();
-            string code = UserManager.GenerateEmailConfirmationTokenAsync(user.Id).Result;
+            var code = UserManager.GenerateEmailConfirmationToken(user.Id);
+            code = System.Web.HttpUtility.UrlEncode(code);
             var callbackUrl = new Uri(Url.Link("ConfirmEmailRoute", new { userId = user.Id, code = code }));
             //TODO uncomment
-            //this.UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>").Wait();
-            //Uri locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
+            this.UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>").Wait();
+            Uri locationHeader = new Uri(Url.Link("GetUserById", new { id = user.Id }));
 
-            //return locationHeader;
-            return null;
+            return locationHeader;
+            //return null;
         }
 
         private IHttpActionResult GetErrorResult(IdentityResult result)

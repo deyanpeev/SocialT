@@ -34,8 +34,8 @@
         public IHttpActionResult Get(string specialtyName)
         {
             int specialtyId = this.Data.Specialties.All().Single(s => s.Name == specialtyName).Id;
-            GetGroupViewModel result = this.Data.Groups.All().Select(GetGroupViewModel.FromGroup)
-                .First(g => g.SpecialtyId == specialtyId);
+            IQueryable<GetGroupViewModel> result = this.Data.Groups.All().Select(GetGroupViewModel.FromGroup)
+                .Where(g => g.SpecialtyId == specialtyId);
             return Ok(result);
         }
 

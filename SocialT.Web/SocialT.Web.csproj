@@ -241,6 +241,7 @@
     <Compile Include="Controllers\DriversController.cs" />
     <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Controllers\NewsController.cs" />
     <Compile Include="Controllers\PostsController.cs" />
     <Compile Include="Controllers\SkillsController.cs" />
     <Compile Include="Controllers\SpecialtiesController.cs" />
@@ -260,9 +261,11 @@
     <Compile Include="Models\Groups\GetGroupViewModel.cs" />
     <Compile Include="Models\Messages\GetMessagesViewModel.cs" />
     <Compile Include="Models\Messages\SentMessageViewModel.cs" />
+    <Compile Include="Models\News\CreateNewsViewModel.cs" />
+    <Compile Include="Models\News\GetNewsViewModel.cs" />
     <Compile Include="Models\Posts\CreatePostViewModel.cs" />
     <Compile Include="Models\Posts\GetPostsViewModel.cs" />
-    <Compile Include="Models\Skills\EndorseSkill.cs" />
+    <Compile Include="Models\Skills\EndorseSkillViewModel.cs" />
     <Compile Include="Models\Specialties\GetSpecialtiesViewModel.cs" />
     <Compile Include="Models\Stats\StatsViewModel.cs" />
     <Compile Include="Models\Trips\CreateTripBindingModel.cs" />

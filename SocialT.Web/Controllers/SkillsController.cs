@@ -9,6 +9,7 @@
     using System.Linq;
     using System.Web;
     using System.Web.Http;
+    using SocialT.Web.Models.Skills;
 
     [RoutePrefix("api/Skills")]
     public class SkillsController : BaseApiController
@@ -26,23 +27,27 @@
         [HttpPost]
         [Authorize(Roles = RoleConstants.Student)]
         [Route("AddSkill")]
-        public IHttpActionResult AddSkill(string skillName)
+        public IHttpActionResult AddSkill([FromBody]string skillName)
         {
+            if (string.IsNullOrEmpty(skillName))
+            {
+                return BadRequest("The name cannot be null or empty");
+            }
+
             var currentUserId = User.Identity.GetUserId();
             var currentUser = this.Data.Users.All().FirstOrDefault(x => x.Id == currentUserId);
 
-            if(!this.Data.Skills.All().Select(s => s.Name).Contains(skillName))
-            {
-                this.Data.Skills.Add(new Skill()
-                {
-                    Name = skillName
-                });
-            }
+            var currentUserSkills = this.Data.Skills.All().Where(s => s.UserId == currentUserId);
 
-            Skill skill = this.Data.Skills.All().Single(s => s.Name == skillName);
-            if (!currentUser.Skills.Select(s => s.Name).Contains(skillName))
+            Skill skill = this.Data.Skills.All().SingleOrDefault(s => s.Name == skillName);
+            if (!currentUserSkills.Select(s => s.Name).Contains(skillName))
             {
-                currentUser.Skills.Add(skill);
+                currentUser.Skills.Add(new Skill()
+                {
+                    Name = skillName,
+                    UserId = currentUserId
+                });
+                this.Data.SaveChanges();
             }
             else
             {
@@ -55,9 +60,29 @@
         [HttpPost]
         [Authorize]
         [Route("EndorseSkill")]
-        public IHttpActionResult EndorseSkill()
+        public IHttpActionResult EndorseSkill(EndorseSkillViewModel model)
         {
+            if (!this.ModelState.IsValid)
+            {
+                return BadRequest(GeneralConstants.InvalidRequest);
+            }
 
+            var currentUserId = User.Identity.GetUserId();
+            var currentUser = this.Data.Users.All().FirstOrDefault(x => x.Id == currentUserId);
+
+            if(model.UserId == currentUserId)
+            {
+                return BadRequest("User dannot endorse his own skills.");
+            }
+
+            var userToEndorse = this.Data.Users.All().FirstOrDefault(x => x.Id == model.UserId);
+            var skill = userToEndorse.Skills.FirstOrDefault(s => s.Id == model.SkillId);
+            if (skill == null)
+            {
+                return BadRequest("User doesn't have such skill"); 
+            }
+
+            return Ok("Skill successfully added.");
         }
 
         [HttpPost]
@@ -65,6 +90,11 @@
         [Route("RemoveSkill")]
         public IHttpActionResult RemoveSkill(string skillName)
         {
+            if (string.IsNullOrEmpty(skillName))
+            {
+                return BadRequest("The name cannot be empty.");
+            }
+
             var currentUserId = User.Identity.GetUserId();
             var currentUser = this.Data.Users.All().FirstOrDefault(x => x.Id == currentUserId);
 

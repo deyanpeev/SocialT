@@ -15,7 +15,9 @@
                 {
                     Content = p.Content,
                     CreatedAt = p.CreatedAt,
-                    UserFromName = p.UserFrom.CompanyName ?? p.UserFrom.FirstName + " " + p.UserFrom.LastName,
+                    //First + Second name; Company name; Email
+                    UserFromName = p.UserFrom.FirstName != null ? p.UserFrom.FirstName + " " + p.UserFrom.LastName
+                        : (p.UserFrom.CompanyName != null ? p.UserFrom.CompanyName : p.UserFrom.Email),
                     UserFromId = p.UserFromId
                 };
             }

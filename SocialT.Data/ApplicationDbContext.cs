@@ -27,6 +27,8 @@
 
         public IDbSet<Skill> Skills { get; set; }
 
+        public IDbSet<News> News { get; set; }
+
         //TODO Remove
         public IDbSet<Trip> Trips { get; set; }
 
@@ -53,7 +55,9 @@
                 .HasMany(m => m.Passengers)
                 .WithMany(m => m.Trips);
 
-            //TODO Modify
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany(u => u.Skills)
+                .WithMany(s => s.Endorsements);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    function CreatePostController($location, identity, postsService, specialties) {
+    function CreatePostController($location, identity, notifier, postsService, specialties) {
         var vm = this;
         vm.identity = identity;
 
@@ -9,19 +9,23 @@
             postsService
         }
 
+        debugger;
         vm.createGroupPost = function (post) {
-            debugger;
             postsService.createGroupPost(post).then(function (post) {
-                debugger;
+                notifier.success('Post successfully created!');
                 $location.path('/group');
             });
         }
 
         vm.createSpecialtyPost = function (post) {
-            debugger;
             postsService.createSpecialtyPost(post).then(function (post) {
+                notifier.success('Post successfully created!');
                 debugger;
-                $location.path('/specialty');
+                if (vm.identity.isStudent()) {
+                    $location.path('/specialty');
+                } else {
+                    $location.path('/');
+                }
             });
         }
 
@@ -32,5 +36,5 @@
     }
         
     angular.module('myApp.controllers')
-        .controller('CreatePostController', ['$location', 'identity', 'postsService', 'specialties', CreatePostController]);
+        .controller('CreatePostController', ['$location', 'identity', 'notifier', 'postsService', 'specialties', CreatePostController]);
 }());

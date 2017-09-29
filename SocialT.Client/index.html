@@ -27,10 +27,10 @@
                         <li ng-show="vm.identity.isAdmin()">
                             <a href="#/register-teacher">Register Teacher</a>
                         </li>
-                        <li ng-show="vm.identity.isAdmin()">
+                        <li ng-show="vm.identity.isAdmin() || vm.identity.isTeacher()">
                             <a href="#/changeUserState">Users</a>
                         </li>
-                        <li ng-show="vm.identity.isStudent()">
+                        <li ng-show="vm.identity.isStudent() || vm.identity.isEmployer()">
                             <a href="#/user/details">Edit Your Profile</a>
                         </li>
                         <li ng-show="vm.identity.isStudent()">
@@ -38,6 +38,15 @@
                         </li>
                         <li ng-show="vm.identity.isStudent()">
                             <a href="#/specialty">Specialty</a>
+                        </li>
+                        <li ng-show="vm.identity.isAuthenticated()">
+                            <a href="#/messages">Messages</a>
+                        </li>
+                        <li ng-show="vm.identity.isAdmin() || vm.identity.isTeacher()">
+                            <a href="#/news/create">Create News</a>
+                        </li>
+                        <li ng-show="vm.identity.isEmployer() || vm.identity.isTeacher()">
+                            <a href="#/posts/createSpecialtyPost">Create Post</a>
                         </li>
                     </ul>
                     <div ng-include="'views/partials/identity/login.html'"></div>
@@ -85,6 +94,13 @@
     <script src="js/posts/specialty-controller.js"></script>
     <script src="js/posts/posts-service.js"></script>
     <script src="js/posts/create-post-controller.js"></script>
+
+    <script src="js/messages/messages-service.js"></script>
+    <script src="js/messages/messages-controller.js"></script>
+    <script src="js/messages/create-message-controller.js"></script>
+
+    <script src="js/news/news-service.js"></script>
+    <script src="js/news/create-news-controller.js"></script>
 
     <script src="js/admin/manage-users-controller.js"></script>
     <script src="js/admin/users-service.js"></script>

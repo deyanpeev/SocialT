@@ -1,0 +1,27 @@
+﻿<<div class="container">
+    <div class="well">
+        <form name="newsForm" class="form-horizontal">
+            <fieldset>
+                <legend>Create News</legend>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Subject</label>
+                    <div class="col-md-10">
+                        <input id="subject" type="text" placeholder="Subject" ng-model="vm.news.subject" ng-required="true" ng-minlength="5" ng-maxlength="100" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label" for="content">Content</label>
+                    <div class="col-md-10">
+                        <textarea id="content" placeholder="Content" ng-model="vm.news.content" required="required" ng-minlength="5" ng-maxlength="300" class="form-control" />
+                    </div>
+                </div>
+                <div class="pull-right">
+                    <button ng-click="vm.createNews(vm.news)" ng-disabled="newsForm.$invalid" class="btn btn-primary">
+                        Create
+                    </button>
+                    <a href="#/messages" class="btn btn-primary">Cancel</a>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>

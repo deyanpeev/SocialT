@@ -104,6 +104,14 @@
             }
         }
 
+        public IRepository<News> News
+        {
+            get
+            {
+                return this.GetRepository<News>();
+            }
+        }
+
         public int SaveChanges()
         {
             return this.context.SaveChanges();

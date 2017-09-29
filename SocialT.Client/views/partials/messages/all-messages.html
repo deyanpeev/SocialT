@@ -1,0 +1,14 @@
+﻿<div class="container">
+    <div class="jumbotron">
+        <h1 class="text-center">Messages</h1>
+        <h2 class="text-center">{{vm.currentUserName.userName}}</h2>
+    </div>
+    <div class="well" ng-repeat="message in vm.messages">
+        <a class="glyphicon-italic pull-right">at {{message.sentAt | date:'MMM dd, yyyy h:mm:ss a'}}</a>
+        <h2>{{message.subject}}</h2>
+        <h3>From <a href="#/user/details/{{message.fromId}}">{{message.fromName}}</a></h3>
+        <div>
+            {{message.content}}
+        </div>
+    </div>
+</div>

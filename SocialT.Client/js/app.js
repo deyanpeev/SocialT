@@ -15,6 +15,11 @@
             .when('/unauthorized', {
                 templateUrl: PARTIALS_PREFIX + 'home/unauthorized.html'
             })
+            .when('/news/create', {
+                templateUrl: PARTIALS_PREFIX + 'news/create-news.html',
+                controller: 'CreateNewsController',
+                controllerAs: CONTROLLER_AS_VIEW_MODEL
+            })
             .when('/trips',{
                 templateUrl: PARTIALS_PREFIX + 'trips/all-trips.html',
                 controller: 'TripsController',
@@ -67,6 +72,16 @@
             .when('/specialty', {
                 templateUrl: PARTIALS_PREFIX + 'students/specialty.html',
                 controller: 'SpecialtyController',
+                controllerAs: CONTROLLER_AS_VIEW_MODEL
+            })
+            .when('/messages', {
+                templateUrl: PARTIALS_PREFIX + 'messages/all-messages.html',
+                controller: 'MessagesController',
+                controllerAs: CONTROLLER_AS_VIEW_MODEL
+            })
+            .when('/messages/create/:id', {
+                templateUrl: PARTIALS_PREFIX + 'messages/create-message.html',
+                controller: 'CreateMessageController',
                 controllerAs: CONTROLLER_AS_VIEW_MODEL
             })
             .when('/posts/createGroupPost', {

@@ -12,17 +12,24 @@
             {
                 return m => new GetMessagesViewModel()
                 {
+                    Subject = m.Subject,
                     Content = m.Content,
-                    From = m.UserFrom.FirstName != null ? m.UserFrom.FirstName + " " + m.UserFrom.LastName
-                        : m.UserFrom.CompanyName,
+                    FromId = m.UserFromId,
+                    //First + Second name; Company name; Email
+                    FromName = m.UserFrom.FirstName != null ? m.UserFrom.FirstName + " " + m.UserFrom.LastName
+                        : (m.UserFrom.CompanyName != null ? m.UserFrom.CompanyName : m.UserFrom.Email),
                     SentAt = m.CreatedAt
                 };
             }
         }
 
+        public string Subject { get; set; }
+
         public string Content { get; set; }
 
-        public string From { get; set; }
+        public string FromId { get; set; }
+
+        public string FromName { get; set; }
 
         public DateTime SentAt { get; set; }
     }

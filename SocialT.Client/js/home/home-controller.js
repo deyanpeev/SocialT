@@ -1,9 +1,14 @@
 ﻿(function () {
     'use strict';
 
-    function HomeController(statistics, trips, drivers, virtualMachines, identity) {
+    function HomeController(statistics, trips, drivers, virtualMachines, news, identity) {
         var vm = this;
         vm.identity = identity;
+
+        news.getAll()
+            .then(function (allNews) {
+                vm.news = allNews;
+            });
 
         statistics.getStats()
             .then(function (stats) {
@@ -27,6 +32,6 @@
     }
 
     angular.module('myApp')
-        .controller('HomeController', ['statistics', 'trips', 'drivers', 'virtualMachines', 'identity', HomeController])
+        .controller('HomeController', ['statistics', 'trips', 'drivers', 'virtualMachines', 'news', 'identity', HomeController])
     
 }());

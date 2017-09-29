@@ -31,7 +31,8 @@
             var currentUserId = User.Identity.GetUserId();
             var currentUser = this.Data.Users.All().FirstOrDefault(x => x.Id == currentUserId);
 
-            var messages = this.Data.Messages.All().Where(m => m.UserToId == currentUserId).Select(GetMessagesViewModel.FromMessage);
+            var messages = this.Data.Messages.All().Where(m => m.UserToId == currentUserId)
+                .OrderByDescending(m => m.CreatedAt).Select(GetMessagesViewModel.FromMessage);
 
             return Ok(messages);
         }
@@ -53,7 +54,7 @@
             var userTo = this.Data.Users.GetById(model.UserToId);
 
             string emailContent = "<h2>New message from " + currentUserName
-                + " sent you a message</h2><div>" + model.Content + "<div>";
+                + " sent.</h2><div>" + model.Content + "<div>";
 
             GeneralMailMessageService.SendEmail(userTo.Email, model.Subject, emailContent);
 

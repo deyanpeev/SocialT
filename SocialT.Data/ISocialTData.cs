@@ -25,6 +25,8 @@
 
         IRepository<Post> Posts { get; }
 
+        IRepository<News> News { get; }
+
         int SaveChanges();
     }
 }

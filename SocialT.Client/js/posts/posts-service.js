@@ -17,7 +17,6 @@
         }
 
         function createGroupPost(post) {
-            debugger;
             return data.post(VM_URL + '/CreateNewGroupPost', post);
         }
 

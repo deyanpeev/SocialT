@@ -13,6 +13,20 @@ namespace SocialT.Data.Migrations
 
     public sealed class Configuration : DbMigrationsConfiguration<ApplicationDbContext>
     {
+        string[] skillNames = new string[]
+            {
+                "Radio Communications",
+                "CSS",
+                "HTML",
+                "Spanish",
+                "English",
+                "Practicle Programming",
+                "Algorithms",
+                "German",
+                "Java",
+                "vRB"
+            };
+
         public Configuration()
         {
             this.AutomaticMigrationsEnabled = true;
@@ -29,14 +43,25 @@ namespace SocialT.Data.Migrations
             var random = new Random();
 
             var specialties = this.SeedSpecialties(context);
-            var skills = this.SeedSkills(context);
+            //var skills = this.SeedSkills(context);
             var roles = this.SeedApplicationRoles(context);
             var groups = this.SeedGroups(context, specialties, random);
-            var users = this.SeedApplicationUsers(context, roles, skills, groups, random);
+            var users = this.SeedApplicationUsers(context, roles, groups, random);
             //TODO remove
             var cities = this.SeedCities(context);
             this.SeedTrips(context, random, users, cities);
 
+            context.SaveChanges();
+        }
+
+        private void SeedNews(ApplicationDbContext context)
+        {
+            context.News.Add(new News()
+            {
+                Subject = "Something awesome happened",
+                Content = "The Technical university is among the best universities worldwide.",
+                CreatedAt = new DateTime(2016, 12, 1, 10, 16, 17)
+            });
             context.SaveChanges();
         }
 
@@ -177,37 +202,6 @@ namespace SocialT.Data.Migrations
             return specialties;
         }
 
-        private IList<Skill> SeedSkills(ApplicationDbContext context)
-        {
-            IList<Skill> skills = new List<Skill>();
-            string[] skillNames = new string[]
-            {
-                "Radio Communications",
-                "CSS",
-                "HTML",
-                "Spanish",
-                "English",
-                "Practicle Programming",
-                "Algorithms",
-                "German",
-                "Java",
-                "vRB"
-            };
-
-            foreach (var skillName in skillNames)
-            {
-                var skill = new Skill
-                {
-                    Name = skillName
-                };
-                skills.Add(skill);
-                context.Skills.Add(skill);
-            }
-
-            context.SaveChanges();
-            return skills;
-        }
-
         public IList<Group> SeedGroups(ApplicationDbContext context, IList<Specialty> specialties, Random random)
         {
             IList<Group> groups = new List<Group>();
@@ -228,7 +222,7 @@ namespace SocialT.Data.Migrations
 
         //TODO remove car info
         private List<ApplicationUser> SeedApplicationUsers(ApplicationDbContext context, IList<ApplicationRole> roles,
-            IList<Skill> skills, IList<Group> groups, Random random)
+            IList<Group> groups, Random random)
         {
             var users = new List<ApplicationUser>();
             var userStore = new UserStore<ApplicationUser>(context);
@@ -261,9 +255,13 @@ namespace SocialT.Data.Migrations
                     case RoleConstants.Student:
                         user.FirstName = "FirstName" + i;
                         user.LastName = "LastName" + i;
-                        for (int j = 0; j < random.Next(0, skills.Count); j++)
+                        for (int j = 0; j < random.Next(0, this.skillNames.Length); j++)
                         {
-                            user.Skills.Add(skills[j]);
+                            user.Skills.Add(new Skill()
+                            {
+                                Name = skillNames[j],
+                                UserId = user.Id
+                            });
                         }
                         user.FacultyNumber = random.Next(100000, 999999).ToString();
                         user.Course = random.Next(1, 4);

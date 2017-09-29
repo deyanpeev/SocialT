@@ -84,6 +84,11 @@
     <Content Include="js\admin\manage-users-controller.js" />
     <Content Include="js\admin\users-service.js" />
     <Content Include="js\identity\show-profile-controller.js" />
+    <Content Include="js\messages\create-message-controller.js" />
+    <Content Include="js\messages\messages-controller.js" />
+    <Content Include="js\messages\messages-service.js" />
+    <Content Include="js\news\create-news-controller.js" />
+    <Content Include="js\news\news-service.js" />
     <Content Include="js\posts\create-post-controller.js" />
     <Content Include="js\posts\group-controller.js" />
     <Content Include="js\posts\posts-service.js" />
@@ -918,6 +923,9 @@
     <Content Include="views\partials\identity\register-teacher.html" />
     <Content Include="views\partials\identity\register.html" />
     <Content Include="views\partials\identity\show-user-details.html" />
+    <Content Include="views\partials\messages\all-messages.html" />
+    <Content Include="views\partials\messages\create-message.html" />
+    <Content Include="views\partials\news\create-news.html" />
     <Content Include="views\partials\posts\create-group-post.html" />
     <Content Include="views\partials\posts\create-specialty-post.html" />
     <Content Include="views\partials\students\group.html" />

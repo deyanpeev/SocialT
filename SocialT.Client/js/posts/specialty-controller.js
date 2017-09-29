@@ -1,7 +1,7 @@
 ﻿(function () {
     'use strict';
 
-    function SpecialtyController(postsService) {
+    function SpecialtyController(postsService, groups) {
         var vm = this;
 
         postsService.getAllPostsForUserSpecialty()
@@ -9,8 +9,13 @@
                 debugger;
                 vm.posts = posts;
             });
+
+        groups.getGroupByUser()
+            .then(function (group) {
+                vm.specialtyName = group.specialtyName;
+            });
     }
         
     angular.module('myApp.controllers')
-        .controller('SpecialtyController', ['postsService', SpecialtyController]);
+        .controller('SpecialtyController', ['postsService', 'groups', SpecialtyController]);
 }());

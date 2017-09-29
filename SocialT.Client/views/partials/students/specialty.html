@@ -1,9 +1,8 @@
 ﻿<div class="container">
     <div class="jumbotron">
-        <h1 class="text-center">
-            Posts
-            <a href="#/posts/createSpecialtyPost" class="btn btn-primary pull-right">Create</a>
-        </h1>
+        <h1 class="text-center">Posts</h1>
+        <h2 class="text-center">{{vm.specialtyName}}</h2>
+        <a href="#/posts/createSpecialtyPost" class="btn btn-primary pull-right">Create</a>
     </div>
 
     <div class="well" ng-repeat="post in vm.posts">

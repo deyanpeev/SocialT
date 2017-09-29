@@ -47,7 +47,7 @@
         }
 
         [HttpPost]
-        [Authorize(Roles = RoleConstants.Employer + "," + RoleConstants.Student)]
+        [Authorize(Roles = RoleConstants.Employer + "," + RoleConstants.Student + "," + RoleConstants.Teacher)]
         [Route("api/Posts/CreateNewSpecialtyPost")]
         public IHttpActionResult CreateNewSpecialtyPost(CreatePostViewModel inputPost)
         {
